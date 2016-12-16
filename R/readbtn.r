@@ -322,8 +322,6 @@ readbtn <- function(rootname){
                                 subset(. != "")
             indx <- indx + BLOCKEND
                 }
-            ofl <- paste("C:\\Users\\dpuddephatt\\Desktop\\TST\\LAYER_", k, "_COMP_", M, "_.csv", sep = "")
-            write.csv(data.frame(SCONCin), ofl)    
             }    
         } 
     SCONCin %<>% as.numeric()
