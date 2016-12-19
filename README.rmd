@@ -1,0 +1,115 @@
+---
+title: "MFtools README"
+author: "Dan Puddephatt"
+date: "`r Sys.Date()`"
+output:
+    github_document
+---
+The MFtools library is used for investigating the input and output ffiles from MODFLOW simulations. 
+The library is based on fixed-width file formats as are generated when using Groundwater Vistas. 
+This library has been tested using Groundwater Vistas files. The library includes functions for the following
+tasks:
+
+* Reading the discritization file (readdis(rootname))
+* Reading the layer property flow file (readlpf(rootname))
+* Reading the basic transport package file (readbtn(rootname))
+* Reading the headsave file (readhds(rootname, NLAY, NTTS))
+* Reading the unformatted concentration file (readucn(ucrootname, NLAY, NTTS))
+* Reading no-flow array file (readnoflow(FILE, rootname))
+* Writing the unformatted concentration file based on a concentration dataframe (writeucn(ucn, ofl))
+
+The library also includes a utility function for calculating contaminant mass based on information from the
+headsave file (i.e., saturated thickness), porosity read from the basic transport package,
+ and concentrations from the unformatted concentration file (masscalc(BTN, HDS, UCN))
+
+The package includes a set of MODFLOW files from the Texas Water Development Board (TWDB) Groundwater Availability Model
+(GAM) for the Edwards-Trinity (High Plains) Aquifer in Texas and New Mexico.
+
+The functions from the MFtools library use rootnames to read files. Rootnames
+are based on the MODFLOW rootname convention such that files consist of
+a rootname and an extension that describes the MODFLOW file.
+
+For the example using the TWDB GAM the rootname can be identified as 
+follows (NOTE that by my personal convention my script headings include
+the libraries that I will be using):
+
+```{r LOAD, message = FALSE}
+library(MFtools)
+library(tidyverse)
+library(magrittr)
+library(scales)
+rnm <- system.file("extdata", "Ogll_sv2.01_ss.dis", package = "MFtools") %>%
+        tools::file_path_sans_ext()
+```
+
+With the rootname we can now read in the discretization file
+
+```{r DIS}
+d <- readdis(rnm)
+d
+```
+
+The structure of the variable, d, is a list consisting of the information
+from the MODFLOW discretization file. For indexing purposes, some of the 
+information is arranged in a dataframe, such as the TOP and BOT variables that
+describe the top and bottom elevations of each model layer.
+
+MFtools includes a function to read the layer property flow file (.lpf).
+
+```{r LPF}
+p <- readlpf(rnm)
+p
+```
+
+The .lpf file has lots of really useful information. We can isolate this information using the
+"$" indexing operation.
+
+```{r PROPS}
+p$PROPS
+
+p$PROPS %>% group_by(LAY) %>% summarise(MIN = min(HK), MEDIAN = median(HK), MAX = max(HK))
+```
+
+The model is a four layer model. Summarising does not give us a lot of
+information about the distribution of hydraulic conductivity values.
+
+We can, instead, use ggplot to plot a histogram of hydraulic conductivity values
+by layer
+
+```{r HISTO_K}
+p$PROPS %>% ggplot(aes(x = HK)) +
+            geom_histogram(aes(y = (..count..)/tapply(..count.., ..PANEL.., sum)[..PANEL..]),
+                colour = "black", 
+                fill = "yellow", 
+                alpha = 0.6) +
+            scale_y_continuous(limits = c(0, 0.2), 
+                breaks = seq(0, 0.2, 0.05), 
+                labels = percent, 
+                name = "FREQUENCY COUNT (PERCENT)") +   
+            scale_x_log10(breaks = 10^(-10:10), 
+                 minor_breaks = c(1:9 %o% 10^(-10:10)), 
+                 labels = scales::trans_format("log10", math_format(10^.x))) +
+            facet_wrap(~LAY, ncol = 1) +
+            labs(x = "HYDRAULIC CONDUCTIVITY (FEET / DAY)") +
+            theme_bw()
+```
+
+We can also investigate groundwater elevations by model layer
+
+```{r GWE}
+h <- readhds(rnm, NLAY = d$NLAY, 1)
+h %>% filter(GWE > 2000) %>% filter(GWE < 10000) %>%
+            ggplot(aes(x = GWE)) +
+            geom_histogram(aes(y = (..count..)/tapply(..count.., ..PANEL.., sum)[..PANEL..]),
+                colour = "black", 
+                fill = "blue", 
+                alpha = 0.6) +
+            scale_y_continuous(limits = c(0, 0.2), 
+                breaks = seq(0, 0.2, 0.05), 
+                labels = percent, 
+                name = "FREQUENCY COUNT (PERCENT)") +   
+            facet_wrap(~LAY, ncol = 1) +
+            labs(x = "GROUNDWATER ELEVATION (FEET AMSL)") +
+            theme_bw()
+```
+            

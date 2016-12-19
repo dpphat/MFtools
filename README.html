@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="data:text/css;charset=utf-8,%0A%40font%2Dface%20%7B%0Afont%2Dfamily%3A%20octicons%2Dlink%3B%0Asrc%3A%20url%28data%3Afont%2Fwoff%3Bcharset%3Dutf%2D8%3Bbase64%2Cd09GRgABAAAAAAZwABAAAAAACFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEU0lHAAAGaAAAAAgAAAAIAAAAAUdTVUIAAAZcAAAACgAAAAoAAQAAT1MvMgAAAyQAAABJAAAAYFYEU3RjbWFwAAADcAAAAEUAAACAAJThvmN2dCAAAATkAAAABAAAAAQAAAAAZnBnbQAAA7gAAACyAAABCUM%2B8IhnYXNwAAAGTAAAABAAAAAQABoAI2dseWYAAAFsAAABPAAAAZwcEq9taGVhZAAAAsgAAAA0AAAANgh4a91oaGVhAAADCAAAABoAAAAkCA8DRGhtdHgAAAL8AAAADAAAAAwGAACfbG9jYQAAAsAAAAAIAAAACABiATBtYXhwAAACqAAAABgAAAAgAA8ASm5hbWUAAAToAAABQgAAAlXu73sOcG9zdAAABiwAAAAeAAAAME3QpOBwcmVwAAAEbAAAAHYAAAB%2FaFGpk3jaTY6xa8JAGMW%2FO62BDi0tJLYQincXEypYIiGJjSgHniQ6umTsUEyLm5BV6NDBP8Tpts6F0v%2Bk%2F0an2i%2BitHDw3v2%2B9%2BDBKTzsJNnWJNTgHEy4BgG3EMI9DCEDOGEXzDADU5hBKMIgNPZqoD3SilVaXZCER3%2FI7AtxEJLtzzuZfI%2BVVkprxTlXShWKb3TBecG11rwoNlmmn1P2WYcJczl32etSpKnziC7lQyWe1smVPy%2FLt7Kc%2B0vWY%2FgAgIIEqAN9we0pwKXreiMasxvabDQMM4riO%2BqxM2ogwDGOZTXxwxDiycQIcoYFBLj5K3EIaSctAq2kTYiw%2Bymhce7vwM9jSqO8JyVd5RH9gyTt2%2BJ%2FyUmYlIR0s04n6%2B7Vm1ozezUeLEaUjhaDSuXHwVRgvLJn1tQ7xiuVv%2FocTRF42mNgZGBgYGbwZOBiAAFGJBIMAAizAFoAAABiAGIAznjaY2BkYGAA4in8zwXi%2BW2%2BMjCzMIDApSwvXzC97Z4Ig8N%2FBxYGZgcgl52BCSQKAA3jCV8CAABfAAAAAAQAAEB42mNgZGBg4f3vACQZQABIMjKgAmYAKEgBXgAAeNpjYGY6wTiBgZWBg2kmUxoDA4MPhGZMYzBi1AHygVLYQUCaawqDA4PChxhmh%2F8ODDEsvAwHgMKMIDnGL0x7gJQCAwMAJd4MFwAAAHjaY2BgYGaA4DAGRgYQkAHyGMF8NgYrIM3JIAGVYYDT%2BAEjAwuDFpBmA9KMDEwMCh9i%2Fv8H8sH0%2F4dQc1iAmAkALaUKLgAAAHjaTY9LDsIgEIbtgqHUPpDi3gPoBVyRTmTddOmqTXThEXqrob2gQ1FjwpDvfwCBdmdXC5AVKFu3e5MfNFJ29KTQT48Ob9%2FlqYwOGZxeUelN2U2R6%2BcArgtCJpauW7UQBqnFkUsjAY%2FkOU1cP%2BDAgvxwn1chZDwUbd6CFimGXwzwF6tPbFIcjEl%2BvvmM%2FbyA48e6tWrKArm4ZJlCbdsrxksL1AwWn%2FyBSJKpYbq8AXaaTb8AAHja28jAwOC00ZrBeQNDQOWO%2F%2FsdBBgYGRiYWYAEELEwMTE4uzo5Zzo5b2BxdnFOcALxNjA6b2ByTswC8jYwg0VlNuoCTWAMqNzMzsoK1rEhNqByEyerg5PMJlYuVueETKcd%2F89uBpnpvIEVomeHLoMsAAe1Id4AAAAAAAB42oWQT07CQBTGv0JBhagk7HQzKxca2sJCE1hDt4QF%2B9JOS0nbaaYDCQfwCJ7Au3AHj%2BLO13FMmm6cl7785vven0kBjHCBhfpYuNa5Ph1c0e2Xu3jEvWG7UdPDLZ4N92nOm%2BEBXuAbHmIMSRMs%2B4aUEd4Nd3CHD8NdvOLTsA2GL8M9PODbcL%2BhD7C1xoaHeLJSEao0FEW14ckxC%2BTU8TxvsY6X0eLPmRhry2WVioLpkrbp84LLQPGI7c6sOiUzpWIWS5GzlSgUzzLBSikOPFTOXqly7rqx0Z1Q5BAIoZBSFihQYQOOBEdkCOgXTOHA07HAGjGWiIjaPZNW13%2F%2Blm6S9FT7rLHFJ6fQbkATOG1j2OFMucKJJsxIVfQORl%2B9Jyda6Sl1dUYhSCm1dyClfoeDve4qMYdLEbfqHf3O%2FAdDumsjAAB42mNgYoAAZQYjBmyAGYQZmdhL8zLdDEydARfoAqIAAAABAAMABwAKABMAB%2F%2F%2FAA8AAQAAAAAAAAAAAAAAAAABAAAAAA%3D%3D%29%20format%28%27woff%27%29%3B%0A%7D%0Abody%20%7B%0A%2Dwebkit%2Dtext%2Dsize%2Dadjust%3A%20100%25%3B%0Atext%2Dsize%2Dadjust%3A%20100%25%3B%0Acolor%3A%20%23333%3B%0Afont%2Dfamily%3A%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20%22Segoe%20UI%22%2C%20Arial%2C%20freesans%2C%20sans%2Dserif%2C%20%22Apple%20Color%20Emoji%22%2C%20%22Segoe%20UI%20Emoji%22%2C%20%22Segoe%20UI%20Symbol%22%3B%0Afont%2Dsize%3A%2016px%3B%0Aline%2Dheight%3A%201%2E6%3B%0Aword%2Dwrap%3A%20break%2Dword%3B%0A%7D%0Aa%20%7B%0Abackground%2Dcolor%3A%20transparent%3B%0A%7D%0Aa%3Aactive%2C%0Aa%3Ahover%20%7B%0Aoutline%3A%200%3B%0A%7D%0Astrong%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Ah1%20%7B%0Afont%2Dsize%3A%202em%3B%0Amargin%3A%200%2E67em%200%3B%0A%7D%0Aimg%20%7B%0Aborder%3A%200%3B%0A%7D%0Ahr%20%7B%0Abox%2Dsizing%3A%20content%2Dbox%3B%0Aheight%3A%200%3B%0A%7D%0Apre%20%7B%0Aoverflow%3A%20auto%3B%0A%7D%0Acode%2C%0Akbd%2C%0Apre%20%7B%0Afont%2Dfamily%3A%20monospace%2C%20monospace%3B%0Afont%2Dsize%3A%201em%3B%0A%7D%0Ainput%20%7B%0Acolor%3A%20inherit%3B%0Afont%3A%20inherit%3B%0Amargin%3A%200%3B%0A%7D%0Ahtml%20input%5Bdisabled%5D%20%7B%0Acursor%3A%20default%3B%0A%7D%0Ainput%20%7B%0Aline%2Dheight%3A%20normal%3B%0A%7D%0Ainput%5Btype%3D%22checkbox%22%5D%20%7B%0Abox%2Dsizing%3A%20border%2Dbox%3B%0Apadding%3A%200%3B%0A%7D%0Atable%20%7B%0Aborder%2Dcollapse%3A%20collapse%3B%0Aborder%2Dspacing%3A%200%3B%0A%7D%0Atd%2C%0Ath%20%7B%0Apadding%3A%200%3B%0A%7D%0A%2A%20%7B%0Abox%2Dsizing%3A%20border%2Dbox%3B%0A%7D%0Ainput%20%7B%0Afont%3A%2013px%20%2F%201%2E4%20Helvetica%2C%20arial%2C%20nimbussansl%2C%20liberationsans%2C%20freesans%2C%20clean%2C%20sans%2Dserif%2C%20%22Apple%20Color%20Emoji%22%2C%20%22Segoe%20UI%20Emoji%22%2C%20%22Segoe%20UI%20Symbol%22%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%234078c0%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%2C%0Aa%3Aactive%20%7B%0Atext%2Ddecoration%3A%20underline%3B%0A%7D%0Ahr%20%7B%0Aheight%3A%200%3B%0Amargin%3A%2015px%200%3B%0Aoverflow%3A%20hidden%3B%0Abackground%3A%20transparent%3B%0Aborder%3A%200%3B%0Aborder%2Dbottom%3A%201px%20solid%20%23ddd%3B%0A%7D%0Ahr%3Abefore%20%7B%0Adisplay%3A%20table%3B%0Acontent%3A%20%22%22%3B%0A%7D%0Ahr%3Aafter%20%7B%0Adisplay%3A%20table%3B%0Aclear%3A%20both%3B%0Acontent%3A%20%22%22%3B%0A%7D%0Ah1%2C%0Ah2%2C%0Ah3%2C%0Ah4%2C%0Ah5%2C%0Ah6%20%7B%0Amargin%2Dtop%3A%2015px%3B%0Amargin%2Dbottom%3A%2015px%3B%0Aline%2Dheight%3A%201%2E1%3B%0A%7D%0Ah1%20%7B%0Afont%2Dsize%3A%2030px%3B%0A%7D%0Ah2%20%7B%0Afont%2Dsize%3A%2021px%3B%0A%7D%0Ah3%20%7B%0Afont%2Dsize%3A%2016px%3B%0A%7D%0Ah4%20%7B%0Afont%2Dsize%3A%2014px%3B%0A%7D%0Ah5%20%7B%0Afont%2Dsize%3A%2012px%3B%0A%7D%0Ah6%20%7B%0Afont%2Dsize%3A%2011px%3B%0A%7D%0Ablockquote%20%7B%0Amargin%3A%200%3B%0A%7D%0Aul%2C%0Aol%20%7B%0Apadding%3A%200%3B%0Amargin%2Dtop%3A%200%3B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Aol%20ol%2C%0Aul%20ol%20%7B%0Alist%2Dstyle%2Dtype%3A%20lower%2Droman%3B%0A%7D%0Aul%20ul%20ol%2C%0Aul%20ol%20ol%2C%0Aol%20ul%20ol%2C%0Aol%20ol%20ol%20%7B%0Alist%2Dstyle%2Dtype%3A%20lower%2Dalpha%3B%0A%7D%0Add%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20%22Liberation%20Mono%22%2C%20Menlo%2C%20Courier%2C%20monospace%3B%0Afont%2Dsize%3A%2012px%3B%0A%7D%0Apre%20%7B%0Amargin%2Dtop%3A%200%3B%0Amargin%2Dbottom%3A%200%3B%0Afont%3A%2012px%20Consolas%2C%20%22Liberation%20Mono%22%2C%20Menlo%2C%20Courier%2C%20monospace%3B%0A%7D%0A%2Eselect%3A%3A%2Dms%2Dexpand%20%7B%0Aopacity%3A%200%3B%0A%7D%0A%2Eocticon%20%7B%0Afont%3A%20normal%20normal%20normal%2016px%2F1%20octicons%2Dlink%3B%0Adisplay%3A%20inline%2Dblock%3B%0Atext%2Ddecoration%3A%20none%3B%0Atext%2Drendering%3A%20auto%3B%0A%2Dwebkit%2Dfont%2Dsmoothing%3A%20antialiased%3B%0A%2Dmoz%2Dosx%2Dfont%2Dsmoothing%3A%20grayscale%3B%0A%2Dwebkit%2Duser%2Dselect%3A%20none%3B%0A%2Dmoz%2Duser%2Dselect%3A%20none%3B%0A%2Dms%2Duser%2Dselect%3A%20none%3B%0Auser%2Dselect%3A%20none%3B%0A%7D%0A%2Eocticon%2Dlink%3Abefore%20%7B%0Acontent%3A%20%27%5Cf05c%27%3B%0A%7D%0A%2Emarkdown%2Dbody%3Abefore%20%7B%0Adisplay%3A%20table%3B%0Acontent%3A%20%22%22%3B%0A%7D%0A%2Emarkdown%2Dbody%3Aafter%20%7B%0Adisplay%3A%20table%3B%0Aclear%3A%20both%3B%0Acontent%3A%20%22%22%3B%0A%7D%0A%2Emarkdown%2Dbody%3E%2A%3Afirst%2Dchild%20%7B%0Amargin%2Dtop%3A%200%20%21important%3B%0A%7D%0A%2Emarkdown%2Dbody%3E%2A%3Alast%2Dchild%20%7B%0Amargin%2Dbottom%3A%200%20%21important%3B%0A%7D%0Aa%3Anot%28%5Bhref%5D%29%20%7B%0Acolor%3A%20inherit%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0A%2Eanchor%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Apadding%2Dright%3A%202px%3B%0Amargin%2Dleft%3A%20%2D18px%3B%0A%7D%0A%2Eanchor%3Afocus%20%7B%0Aoutline%3A%20none%3B%0A%7D%0Ah1%2C%0Ah2%2C%0Ah3%2C%0Ah4%2C%0Ah5%2C%0Ah6%20%7B%0Amargin%2Dtop%3A%201em%3B%0Amargin%2Dbottom%3A%2016px%3B%0Afont%2Dweight%3A%20bold%3B%0Aline%2Dheight%3A%201%2E4%3B%0A%7D%0Ah1%20%2Eocticon%2Dlink%2C%0Ah2%20%2Eocticon%2Dlink%2C%0Ah3%20%2Eocticon%2Dlink%2C%0Ah4%20%2Eocticon%2Dlink%2C%0Ah5%20%2Eocticon%2Dlink%2C%0Ah6%20%2Eocticon%2Dlink%20%7B%0Acolor%3A%20%23000%3B%0Avertical%2Dalign%3A%20middle%3B%0Avisibility%3A%20hidden%3B%0A%7D%0Ah1%3Ahover%20%2Eanchor%2C%0Ah2%3Ahover%20%2Eanchor%2C%0Ah3%3Ahover%20%2Eanchor%2C%0Ah4%3Ahover%20%2Eanchor%2C%0Ah5%3Ahover%20%2Eanchor%2C%0Ah6%3Ahover%20%2Eanchor%20%7B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Ah1%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%2C%0Ah2%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%2C%0Ah3%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%2C%0Ah4%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%2C%0Ah5%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%2C%0Ah6%3Ahover%20%2Eanchor%20%2Eocticon%2Dlink%20%7B%0Avisibility%3A%20visible%3B%0A%7D%0Ah1%20%7B%0Apadding%2Dbottom%3A%200%2E3em%3B%0Afont%2Dsize%3A%202%2E25em%3B%0Aline%2Dheight%3A%201%2E2%3B%0Aborder%2Dbottom%3A%201px%20solid%20%23eee%3B%0A%7D%0Ah1%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%3B%0A%7D%0Ah2%20%7B%0Apadding%2Dbottom%3A%200%2E3em%3B%0Afont%2Dsize%3A%201%2E75em%3B%0Aline%2Dheight%3A%201%2E225%3B%0Aborder%2Dbottom%3A%201px%20solid%20%23eee%3B%0A%7D%0Ah2%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%3B%0A%7D%0Ah3%20%7B%0Afont%2Dsize%3A%201%2E5em%3B%0Aline%2Dheight%3A%201%2E43%3B%0A%7D%0Ah3%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%2E2%3B%0A%7D%0Ah4%20%7B%0Afont%2Dsize%3A%201%2E25em%3B%0A%7D%0Ah4%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%2E2%3B%0A%7D%0Ah5%20%7B%0Afont%2Dsize%3A%201em%3B%0A%7D%0Ah5%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%2E1%3B%0A%7D%0Ah6%20%7B%0Afont%2Dsize%3A%201em%3B%0Acolor%3A%20%23777%3B%0A%7D%0Ah6%20%2Eanchor%20%7B%0Aline%2Dheight%3A%201%2E1%3B%0A%7D%0Ap%2C%0Ablockquote%2C%0Aul%2C%0Aol%2C%0Adl%2C%0Atable%2C%0Apre%20%7B%0Amargin%2Dtop%3A%200%3B%0Amargin%2Dbottom%3A%2016px%3B%0A%7D%0Ahr%20%7B%0Aheight%3A%204px%3B%0Apadding%3A%200%3B%0Amargin%3A%2016px%200%3B%0Abackground%2Dcolor%3A%20%23e7e7e7%3B%0Aborder%3A%200%20none%3B%0A%7D%0Aul%2C%0Aol%20%7B%0Apadding%2Dleft%3A%202em%3B%0A%7D%0Aul%20ul%2C%0Aul%20ol%2C%0Aol%20ol%2C%0Aol%20ul%20%7B%0Amargin%2Dtop%3A%200%3B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Ali%3Ep%20%7B%0Amargin%2Dtop%3A%2016px%3B%0A%7D%0Adl%20%7B%0Apadding%3A%200%3B%0A%7D%0Adl%20dt%20%7B%0Apadding%3A%200%3B%0Amargin%2Dtop%3A%2016px%3B%0Afont%2Dsize%3A%201em%3B%0Afont%2Dstyle%3A%20italic%3B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Adl%20dd%20%7B%0Apadding%3A%200%2016px%3B%0Amargin%2Dbottom%3A%2016px%3B%0A%7D%0Ablockquote%20%7B%0Apadding%3A%200%2015px%3B%0Acolor%3A%20%23777%3B%0Aborder%2Dleft%3A%204px%20solid%20%23ddd%3B%0A%7D%0Ablockquote%3E%3Afirst%2Dchild%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Ablockquote%3E%3Alast%2Dchild%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Atable%20%7B%0Adisplay%3A%20block%3B%0Awidth%3A%20100%25%3B%0Aoverflow%3A%20auto%3B%0Aword%2Dbreak%3A%20normal%3B%0Aword%2Dbreak%3A%20keep%2Dall%3B%0A%7D%0Atable%20th%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Atable%20th%2C%0Atable%20td%20%7B%0Apadding%3A%206px%2013px%3B%0Aborder%3A%201px%20solid%20%23ddd%3B%0A%7D%0Atable%20tr%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Aborder%2Dtop%3A%201px%20solid%20%23ccc%3B%0A%7D%0Atable%20tr%3Anth%2Dchild%282n%29%20%7B%0Abackground%2Dcolor%3A%20%23f8f8f8%3B%0A%7D%0Aimg%20%7B%0Amax%2Dwidth%3A%20100%25%3B%0Abox%2Dsizing%3A%20content%2Dbox%3B%0Abackground%2Dcolor%3A%20%23fff%3B%0A%7D%0Acode%20%7B%0Apadding%3A%200%3B%0Apadding%2Dtop%3A%200%2E2em%3B%0Apadding%2Dbottom%3A%200%2E2em%3B%0Amargin%3A%200%3B%0Afont%2Dsize%3A%2085%25%3B%0Abackground%2Dcolor%3A%20rgba%280%2C0%2C0%2C0%2E04%29%3B%0Aborder%2Dradius%3A%203px%3B%0A%7D%0Acode%3Abefore%2C%0Acode%3Aafter%20%7B%0Aletter%2Dspacing%3A%20%2D0%2E2em%3B%0Acontent%3A%20%22%5C00a0%22%3B%0A%7D%0Apre%3Ecode%20%7B%0Apadding%3A%200%3B%0Amargin%3A%200%3B%0Afont%2Dsize%3A%20100%25%3B%0Aword%2Dbreak%3A%20normal%3B%0Awhite%2Dspace%3A%20pre%3B%0Abackground%3A%20transparent%3B%0Aborder%3A%200%3B%0A%7D%0A%2Ehighlight%20%7B%0Amargin%2Dbottom%3A%2016px%3B%0A%7D%0A%2Ehighlight%20pre%2C%0Apre%20%7B%0Apadding%3A%2016px%3B%0Aoverflow%3A%20auto%3B%0Afont%2Dsize%3A%2085%25%3B%0Aline%2Dheight%3A%201%2E45%3B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0A%7D%0A%2Ehighlight%20pre%20%7B%0Amargin%2Dbottom%3A%200%3B%0Aword%2Dbreak%3A%20normal%3B%0A%7D%0Apre%20%7B%0Aword%2Dwrap%3A%20normal%3B%0A%7D%0Apre%20code%20%7B%0Adisplay%3A%20inline%3B%0Amax%2Dwidth%3A%20initial%3B%0Apadding%3A%200%3B%0Amargin%3A%200%3B%0Aoverflow%3A%20initial%3B%0Aline%2Dheight%3A%20inherit%3B%0Aword%2Dwrap%3A%20normal%3B%0Abackground%2Dcolor%3A%20transparent%3B%0Aborder%3A%200%3B%0A%7D%0Apre%20code%3Abefore%2C%0Apre%20code%3Aafter%20%7B%0Acontent%3A%20normal%3B%0A%7D%0Akbd%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Apadding%3A%203px%205px%3B%0Afont%2Dsize%3A%2011px%3B%0Aline%2Dheight%3A%2010px%3B%0Acolor%3A%20%23555%3B%0Avertical%2Dalign%3A%20middle%3B%0Abackground%2Dcolor%3A%20%23fcfcfc%3B%0Aborder%3A%20solid%201px%20%23ccc%3B%0Aborder%2Dbottom%2Dcolor%3A%20%23bbb%3B%0Aborder%2Dradius%3A%203px%3B%0Abox%2Dshadow%3A%20inset%200%20%2D1px%200%20%23bbb%3B%0A%7D%0A%2Epl%2Dc%20%7B%0Acolor%3A%20%23969896%3B%0A%7D%0A%2Epl%2Dc1%2C%0A%2Epl%2Ds%20%2Epl%2Dv%20%7B%0Acolor%3A%20%230086b3%3B%0A%7D%0A%2Epl%2De%2C%0A%2Epl%2Den%20%7B%0Acolor%3A%20%23795da3%3B%0A%7D%0A%2Epl%2Ds%20%2Epl%2Ds1%2C%0A%2Epl%2Dsmi%20%7B%0Acolor%3A%20%23333%3B%0A%7D%0A%2Epl%2Dent%20%7B%0Acolor%3A%20%2363a35c%3B%0A%7D%0A%2Epl%2Dk%20%7B%0Acolor%3A%20%23a71d5d%3B%0A%7D%0A%2Epl%2Dpds%2C%0A%2Epl%2Ds%2C%0A%2Epl%2Ds%20%2Epl%2Dpse%20%2Epl%2Ds1%2C%0A%2Epl%2Dsr%2C%0A%2Epl%2Dsr%20%2Epl%2Dcce%2C%0A%2Epl%2Dsr%20%2Epl%2Dsra%2C%0A%2Epl%2Dsr%20%2Epl%2Dsre%20%7B%0Acolor%3A%20%23183691%3B%0A%7D%0A%2Epl%2Dv%20%7B%0Acolor%3A%20%23ed6a43%3B%0A%7D%0A%2Epl%2Did%20%7B%0Acolor%3A%20%23b52a1d%3B%0A%7D%0A%2Epl%2Dii%20%7B%0Abackground%2Dcolor%3A%20%23b52a1d%3B%0Acolor%3A%20%23f8f8f8%3B%0A%7D%0A%2Epl%2Dsr%20%2Epl%2Dcce%20%7B%0Acolor%3A%20%2363a35c%3B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%2Epl%2Dml%20%7B%0Acolor%3A%20%23693a17%3B%0A%7D%0A%2Epl%2Dmh%2C%0A%2Epl%2Dmh%20%2Epl%2Den%2C%0A%2Epl%2Dms%20%7B%0Acolor%3A%20%231d3e81%3B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%2Epl%2Dmq%20%7B%0Acolor%3A%20%23008080%3B%0A%7D%0A%2Epl%2Dmi%20%7B%0Acolor%3A%20%23333%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%2Epl%2Dmb%20%7B%0Acolor%3A%20%23333%3B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%2Epl%2Dmd%20%7B%0Abackground%2Dcolor%3A%20%23ffecec%3B%0Acolor%3A%20%23bd2c00%3B%0A%7D%0A%2Epl%2Dmi1%20%7B%0Abackground%2Dcolor%3A%20%23eaffea%3B%0Acolor%3A%20%2355a532%3B%0A%7D%0A%2Epl%2Dmdr%20%7B%0Acolor%3A%20%23795da3%3B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0A%2Epl%2Dmo%20%7B%0Acolor%3A%20%231d3e81%3B%0A%7D%0Akbd%20%7B%0Adisplay%3A%20inline%2Dblock%3B%0Apadding%3A%203px%205px%3B%0Afont%3A%2011px%20Consolas%2C%20%22Liberation%20Mono%22%2C%20Menlo%2C%20Courier%2C%20monospace%3B%0Aline%2Dheight%3A%2010px%3B%0Acolor%3A%20%23555%3B%0Avertical%2Dalign%3A%20middle%3B%0Abackground%2Dcolor%3A%20%23fcfcfc%3B%0Aborder%3A%20solid%201px%20%23ccc%3B%0Aborder%2Dbottom%2Dcolor%3A%20%23bbb%3B%0Aborder%2Dradius%3A%203px%3B%0Abox%2Dshadow%3A%20inset%200%20%2D1px%200%20%23bbb%3B%0A%7D%0A%2Etask%2Dlist%2Ditem%20%7B%0Alist%2Dstyle%2Dtype%3A%20none%3B%0A%7D%0A%2Etask%2Dlist%2Ditem%2B%2Etask%2Dlist%2Ditem%20%7B%0Amargin%2Dtop%3A%203px%3B%0A%7D%0A%2Etask%2Dlist%2Ditem%20input%20%7B%0Amargin%3A%200%200%2E35em%200%2E25em%20%2D1%2E6em%3B%0Avertical%2Dalign%3A%20middle%3B%0A%7D%0A%3Achecked%2B%2Eradio%2Dlabel%20%7B%0Az%2Dindex%3A%201%3B%0Aposition%3A%20relative%3B%0Aborder%2Dcolor%3A%20%234078c0%3B%0A%7D%0Acode%20%3E%20%2Ekw%20%7B%20color%3A%20%23000000%3B%20%7D%0Acode%20%3E%20%2Edt%20%7B%20color%3A%20%23ed6a43%3B%20%7D%0Acode%20%3E%20%2Edv%20%7B%20color%3A%20%23009999%3B%20%7D%0Acode%20%3E%20%2Ebn%20%7B%20color%3A%20%23009999%3B%20%7D%0Acode%20%3E%20%2Efl%20%7B%20color%3A%20%23009999%3B%20%7D%0Acode%20%3E%20%2Ech%20%7B%20color%3A%20%23009999%3B%20%7D%0Acode%20%3E%20%2Est%20%7B%20color%3A%20%23183691%3B%20%7D%0Acode%20%3E%20%2Eco%20%7B%20color%3A%20%23969896%3B%20%7D%0Acode%20%3E%20%2Eot%20%7B%20color%3A%20%230086b3%3B%20%7D%0Acode%20%3E%20%2Eal%20%7B%20color%3A%20%23a61717%3B%20%7D%0Acode%20%3E%20%2Efu%20%7B%20color%3A%20%2363a35c%3B%20%7D%0Acode%20%3E%20%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%0Acode%20%3E%20%2Ewa%20%7B%20color%3A%20%23000000%3B%20%7D%0Acode%20%3E%20%2Ecn%20%7B%20color%3A%20%23008080%3B%20%7D%0Acode%20%3E%20%2Esc%20%7B%20color%3A%20%23008080%3B%20%7D%0Acode%20%3E%20%2Evs%20%7B%20color%3A%20%23183691%3B%20%7D%0Acode%20%3E%20%2Ess%20%7B%20color%3A%20%23183691%3B%20%7D%0Acode%20%3E%20%2Eim%20%7B%20color%3A%20%23000000%3B%20%7D%0Acode%20%3E%20%2Eva%20%7Bcolor%3A%20%23008080%3B%20%7D%0Acode%20%3E%20%2Ecf%20%7B%20color%3A%20%23000000%3B%20%7D%0Acode%20%3E%20%2Eop%20%7B%20color%3A%20%23000000%3B%20%7D%0Acode%20%3E%20%2Ebu%20%7B%20color%3A%20%23000000%3B%20%7D%0Acode%20%3E%20%2Eex%20%7B%20color%3A%20%23000000%3B%20%7D%0Acode%20%3E%20%2Epp%20%7B%20color%3A%20%23999999%3B%20%7D%0Acode%20%3E%20%2Eat%20%7B%20color%3A%20%23008080%3B%20%7D%0Acode%20%3E%20%2Edo%20%7B%20color%3A%20%23969896%3B%20%7D%0Acode%20%3E%20%2Ean%20%7B%20color%3A%20%23008080%3B%20%7D%0Acode%20%3E%20%2Ecv%20%7B%20color%3A%20%23008080%3B%20%7D%0Acode%20%3E%20%2Ein%20%7B%20color%3A%20%23008080%3B%20%7D%0A" rel="stylesheet">
+<style>
+body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 45px;
+  padding-top: 0px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1 id="mftools-readme">MFtools README</h1>
+<p>Dan Puddephatt<br />
+2016-12-19</p>
+<p>The MFtools library is used for investigating the input and output ffiles from MODFLOW simulations. The library is based on fixed-width file formats as are generated when using Groundwater Vistas. This library has been tested using Groundwater Vistas files. The library includes functions for the following tasks:</p>
+<ul>
+<li>Reading the discritization file (readdis(rootname))</li>
+<li>Reading the layer property flow file (readlpf(rootname))</li>
+<li>Reading the basic transport package file (readbtn(rootname))</li>
+<li>Reading the headsave file (readhds(rootname, NLAY, NTTS))</li>
+<li>Reading the unformatted concentration file (readucn(ucrootname, NLAY, NTTS))</li>
+<li>Reading no-flow array file (readnoflow(FILE, rootname))</li>
+<li>Writing the unformatted concentration file based on a concentration dataframe (writeucn(ucn, ofl))</li>
+</ul>
+<p>The library also includes a utility function for calculating contaminant mass based on information from the headsave file (i.e., saturated thickness), porosity read from the basic transport package, and concentrations from the unformatted concentration file (masscalc(BTN, HDS, UCN))</p>
+<p>The package includes a set of MODFLOW files from the Texas Water Development Board (TWDB) Groundwater Availability Model (GAM) for the Edwards-Trinity (High Plains) Aquifer in Texas and New Mexico.</p>
+<p>The functions from the MFtools library use rootnames to read files. Rootnames are based on the MODFLOW rootname convention such that files consist of a rootname and an extension that describes the MODFLOW file.</p>
+<p>For the example using the TWDB GAM the rootname can be identified as follows (NOTE that by my personal convention my script headings include the libraries that I will be using):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(MFtools)
+<span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(magrittr)
+<span class="kw">library</span>(scales)
+rnm &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Ogll_sv2.01_ss.dis&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;MFtools&quot;</span>) %&gt;%
+<span class="st">        </span>tools::<span class="kw">file_path_sans_ext</span>()</code></pre></div>
+<p>With the rootname we can now read in the discretization file</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw">readdis</span>(rnm)
+d</code></pre></div>
+<pre><code>## $NLAY
+## [1] 4
+## 
+## $NCOL
+## [1] 290
+## 
+## $NROW
+## [1] 270
+## 
+## $NPER
+## [1] 20
+## 
+## $ITMUNI
+## [1] 4
+## 
+## $LENUNI
+## [1] 1
+## 
+## $LAYCBD
+## [1] 0 0 0 0
+## 
+## $dX
+##   [1] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [15] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [29] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [43] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [57] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [71] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [85] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [99] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [113] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [127] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [141] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [155] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [169] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [183] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [197] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [211] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [225] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [239] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [253] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [267] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [281] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## 
+## $X
+##   [1]    2640    7920   13200   18480   23760   29040   34320   39600
+##   [9]   44880   50160   55440   60720   66000   71280   76560   81840
+##  [17]   87120   92400   97680  102960  108240  113520  118800  124080
+##  [25]  129360  134640  139920  145200  150480  155760  161040  166320
+##  [33]  171600  176880  182160  187440  192720  198000  203280  208560
+##  [41]  213840  219120  224400  229680  234960  240240  245520  250800
+##  [49]  256080  261360  266640  271920  277200  282480  287760  293040
+##  [57]  298320  303600  308880  314160  319440  324720  330000  335280
+##  [65]  340560  345840  351120  356400  361680  366960  372240  377520
+##  [73]  382800  388080  393360  398640  403920  409200  414480  419760
+##  [81]  425040  430320  435600  440880  446160  451440  456720  462000
+##  [89]  467280  472560  477840  483120  488400  493680  498960  504240
+##  [97]  509520  514800  520080  525360  530640  535920  541200  546480
+## [105]  551760  557040  562320  567600  572880  578160  583440  588720
+## [113]  594000  599280  604560  609840  615120  620400  625680  630960
+## [121]  636240  641520  646800  652080  657360  662640  667920  673200
+## [129]  678480  683760  689040  694320  699600  704880  710160  715440
+## [137]  720720  726000  731280  736560  741840  747120  752400  757680
+## [145]  762960  768240  773520  778800  784080  789360  794640  799920
+## [153]  805200  810480  815760  821040  826320  831600  836880  842160
+## [161]  847440  852720  858000  863280  868560  873840  879120  884400
+## [169]  889680  894960  900240  905520  910800  916080  921360  926640
+## [177]  931920  937200  942480  947760  953040  958320  963600  968880
+## [185]  974160  979440  984720  990000  995280 1000560 1005840 1011120
+## [193] 1016400 1021680 1026960 1032240 1037520 1042800 1048080 1053360
+## [201] 1058640 1063920 1069200 1074480 1079760 1085040 1090320 1095600
+## [209] 1100880 1106160 1111440 1116720 1122000 1127280 1132560 1137840
+## [217] 1143120 1148400 1153680 1158960 1164240 1169520 1174800 1180080
+## [225] 1185360 1190640 1195920 1201200 1206480 1211760 1217040 1222320
+## [233] 1227600 1232880 1238160 1243440 1248720 1254000 1259280 1264560
+## [241] 1269840 1275120 1280400 1285680 1290960 1296240 1301520 1306800
+## [249] 1312080 1317360 1322640 1327920 1333200 1338480 1343760 1349040
+## [257] 1354320 1359600 1364880 1370160 1375440 1380720 1386000 1391280
+## [265] 1396560 1401840 1407120 1412400 1417680 1422960 1428240 1433520
+## [273] 1438800 1444080 1449360 1454640 1459920 1465200 1470480 1475760
+## [281] 1481040 1486320 1491600 1496880 1502160 1507440 1512720 1518000
+## [289] 1523280 1528560
+## 
+## $dY
+##   [1] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [15] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [29] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [43] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [57] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [71] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [85] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+##  [99] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [113] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [127] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [141] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [155] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [169] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [183] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [197] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [211] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [225] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [239] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [253] 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280 5280
+## [267] 5280 5280 5280 5280
+## 
+## $Y
+##   [1] 1422960 1417680 1412400 1407120 1401840 1396560 1391280 1386000
+##   [9] 1380720 1375440 1370160 1364880 1359600 1354320 1349040 1343760
+##  [17] 1338480 1333200 1327920 1322640 1317360 1312080 1306800 1301520
+##  [25] 1296240 1290960 1285680 1280400 1275120 1269840 1264560 1259280
+##  [33] 1254000 1248720 1243440 1238160 1232880 1227600 1222320 1217040
+##  [41] 1211760 1206480 1201200 1195920 1190640 1185360 1180080 1174800
+##  [49] 1169520 1164240 1158960 1153680 1148400 1143120 1137840 1132560
+##  [57] 1127280 1122000 1116720 1111440 1106160 1100880 1095600 1090320
+##  [65] 1085040 1079760 1074480 1069200 1063920 1058640 1053360 1048080
+##  [73] 1042800 1037520 1032240 1026960 1021680 1016400 1011120 1005840
+##  [81] 1000560  995280  990000  984720  979440  974160  968880  963600
+##  [89]  958320  953040  947760  942480  937200  931920  926640  921360
+##  [97]  916080  910800  905520  900240  894960  889680  884400  879120
+## [105]  873840  868560  863280  858000  852720  847440  842160  836880
+## [113]  831600  826320  821040  815760  810480  805200  799920  794640
+## [121]  789360  784080  778800  773520  768240  762960  757680  752400
+## [129]  747120  741840  736560  731280  726000  720720  715440  710160
+## [137]  704880  699600  694320  689040  683760  678480  673200  667920
+## [145]  662640  657360  652080  646800  641520  636240  630960  625680
+## [153]  620400  615120  609840  604560  599280  594000  588720  583440
+## [161]  578160  572880  567600  562320  557040  551760  546480  541200
+## [169]  535920  530640  525360  520080  514800  509520  504240  498960
+## [177]  493680  488400  483120  477840  472560  467280  462000  456720
+## [185]  451440  446160  440880  435600  430320  425040  419760  414480
+## [193]  409200  403920  398640  393360  388080  382800  377520  372240
+## [201]  366960  361680  356400  351120  345840  340560  335280  330000
+## [209]  324720  319440  314160  308880  303600  298320  293040  287760
+## [217]  282480  277200  271920  266640  261360  256080  250800  245520
+## [225]  240240  234960  229680  224400  219120  213840  208560  203280
+## [233]  198000  192720  187440  182160  176880  171600  166320  161040
+## [241]  155760  150480  145200  139920  134640  129360  124080  118800
+## [249]  113520  108240  102960   97680   92400   87120   81840   76560
+## [257]   71280   66000   60720   55440   50160   44880   39600   34320
+## [265]   29040   23760   18480   13200    7920    2640
+## 
+## $TOP
+## # A tibble: 78,300 × 3
+##      ROW   COL    TOP
+##    &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1      1     1 2368.4
+## 2      1     2 2368.4
+## 3      1     3 2368.4
+## 4      1     4 2368.4
+## 5      1     5 2368.4
+## 6      1     6 2368.4
+## 7      1     7 2368.4
+## 8      1     8 2368.4
+## 9      1     9 2368.4
+## 10     1    10 2368.4
+## # ... with 78,290 more rows
+## 
+## $BOT
+## # A tibble: 313,200 × 4
+##      LAY   ROW   COL    BOT
+##    &lt;int&gt; &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1      1     1     1 2363.4
+## 2      1     1     2 2363.4
+## 3      1     1     3 2363.4
+## 4      1     1     4 2363.4
+## 5      1     1     5 2363.4
+## 6      1     1     6 2363.4
+## 7      1     1     7 2363.4
+## 8      1     1     8 2363.4
+## 9      1     1     9 2363.4
+## 10     1     1    10 2363.4
+## # ... with 313,190 more rows
+## 
+## $PERLEN
+##  [1] 364635 364635 364635 364635 364635 364635 364635 364635 364635 364635
+## [11] 364635 364635 364635 364635 364635 364635 364635 364635 364635    365
+## 
+## $NSTP
+##  [1] 999 999 999 999 999 999 999 999 999 999 999 999 999 999 999 999 999
+## [18] 999 999   1
+## 
+## $TSMULT
+##  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+## 
+## $SS
+##  [1] &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot;
+## [15] &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot; &quot;TR&quot;</code></pre>
+<p>The structure of the variable, d, is a list consisting of the information from the MODFLOW discretization file. For indexing purposes, some of the information is arranged in a dataframe, such as the TOP and BOT variables that describe the top and bottom elevations of each model layer.</p>
+<p>MFtools includes a function to read the layer property flow file (.lpf).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">readlpf</span>(rnm)
+p</code></pre></div>
+<pre><code>## $ILPFCB
+## [1] 50
+## 
+## $HDRY
+## [1] 999
+## 
+## $NPLPF
+## [1] 0
+## 
+## $LAYTYP
+## [1] 1 3 3 3
+## 
+## $LAYAVG
+## [1] 0 0 0 0
+## 
+## $CHANI
+## [1] 1 1 1 1
+## 
+## $LAYVKA
+## [1] 0 0 0 0
+## 
+## $LAYWET
+## [1] 1 1 1 1
+## 
+## $WETFCT
+## [1] 1
+## 
+## $IWETIT
+## [1] 2
+## 
+## $IHDWET
+## [1] 0
+## 
+## $PARNAM
+## character(0)
+## 
+## $PARTYP
+## character(0)
+## 
+## $Parval
+## numeric(0)
+## 
+## $NCLU
+## integer(0)
+## 
+## $Layer
+## NULL
+## 
+## $Mltarr
+## NULL
+## 
+## $Zonarr
+## NULL
+## 
+## $IZ
+## NULL
+## 
+## $PROPS
+## # A tibble: 313,200 × 10
+##      LAY   ROW   COL    HK  HANI   VKA    Ss    Sy VKCBD WETDRY
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1      1     1     1   2.5    NA  0.25  0.15  0.15    NA      0
+## 2      1     1     2   2.5    NA  0.25  0.15  0.15    NA      0
+## 3      1     1     3   2.5    NA  0.25  0.15  0.15    NA      0
+## 4      1     1     4   2.5    NA  0.25  0.15  0.15    NA      0
+## 5      1     1     5   2.5    NA  0.25  0.15  0.15    NA      0
+## 6      1     1     6   2.5    NA  0.25  0.15  0.15    NA      0
+## 7      1     1     7   2.5    NA  0.25  0.15  0.15    NA      0
+## 8      1     1     8   2.5    NA  0.25  0.15  0.15    NA      0
+## 9      1     1     9   2.5    NA  0.25  0.15  0.15    NA      0
+## 10     1     1    10   2.5    NA  0.25  0.15  0.15    NA      0
+## # ... with 313,190 more rows</code></pre>
+<p>The .lpf file has lots of really useful information. We can isolate this information using the &quot;$&quot; indexing operation.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$PROPS</code></pre></div>
+<pre><code>## # A tibble: 313,200 × 10
+##      LAY   ROW   COL    HK  HANI   VKA    Ss    Sy VKCBD WETDRY
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1      1     1     1   2.5    NA  0.25  0.15  0.15    NA      0
+## 2      1     1     2   2.5    NA  0.25  0.15  0.15    NA      0
+## 3      1     1     3   2.5    NA  0.25  0.15  0.15    NA      0
+## 4      1     1     4   2.5    NA  0.25  0.15  0.15    NA      0
+## 5      1     1     5   2.5    NA  0.25  0.15  0.15    NA      0
+## 6      1     1     6   2.5    NA  0.25  0.15  0.15    NA      0
+## 7      1     1     7   2.5    NA  0.25  0.15  0.15    NA      0
+## 8      1     1     8   2.5    NA  0.25  0.15  0.15    NA      0
+## 9      1     1     9   2.5    NA  0.25  0.15  0.15    NA      0
+## 10     1     1    10   2.5    NA  0.25  0.15  0.15    NA      0
+## # ... with 313,190 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$PROPS %&gt;%<span class="st"> </span><span class="kw">group_by</span>(LAY) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(<span class="dt">MIN =</span> <span class="kw">min</span>(HK), <span class="dt">MEDIAN =</span> <span class="kw">median</span>(HK), <span class="dt">MAX =</span> <span class="kw">max</span>(HK))</code></pre></div>
+<pre><code>## # A tibble: 4 × 4
+##     LAY   MIN MEDIAN    MAX
+##   &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1     1 2.500    2.5 1374.9
+## 2     2 0.001    2.5 1374.9
+## 3     3 0.001    2.5 1374.9
+## 4     4 2.500    2.5 1374.9</code></pre>
+<p>The model is a four layer model. Summarising does not give us a lot of information about the distribution of hydraulic conductivity values.</p>
+<p>We can, instead, use ggplot to plot a histogram of hydraulic conductivity values by layer</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p$PROPS %&gt;%<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> HK)) +
+<span class="st">            </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y =</span> (..count..)/<span class="kw">tapply</span>(..count.., ..PANEL.., sum)[..PANEL..]),
+                <span class="dt">colour =</span> <span class="st">&quot;black&quot;</span>, 
+                <span class="dt">fill =</span> <span class="st">&quot;yellow&quot;</span>, 
+                <span class="dt">alpha =</span> <span class="fl">0.6</span>) +
+<span class="st">            </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">0.2</span>), 
+                <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.2</span>, <span class="fl">0.05</span>), 
+                <span class="dt">labels =</span> percent, 
+                <span class="dt">name =</span> <span class="st">&quot;FREQUENCY COUNT (PERCENT)&quot;</span>) +<span class="st">   </span>
+<span class="st">            </span><span class="kw">scale_x_log10</span>(<span class="dt">breaks =</span> <span class="dv">10</span>^(-<span class="dv">10</span>:<span class="dv">10</span>), 
+                 <span class="dt">minor_breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">9</span> %o%<span class="st"> </span><span class="dv">10</span>^(-<span class="dv">10</span>:<span class="dv">10</span>)), 
+                 <span class="dt">labels =</span> scales::<span class="kw">trans_format</span>(<span class="st">&quot;log10&quot;</span>, <span class="kw">math_format</span>(<span class="dv">10</span>^.x))) +
+<span class="st">            </span><span class="kw">facet_wrap</span>(~LAY, <span class="dt">ncol =</span> <span class="dv">1</span>) +
+<span class="st">            </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;HYDRAULIC CONDUCTIVITY (FEET / DAY)&quot;</span>) +
+<span class="st">            </span><span class="kw">theme_bw</span>()</code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+## Warning: Removed 4 rows containing missing values (geom_bar).</code></pre>
+<p><img src="data:image/png;base64,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" /></p>
+<p>We can also investigate groundwater elevations by model layer</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">h &lt;-<span class="st"> </span><span class="kw">readhds</span>(rnm, <span class="dt">NLAY =</span> d$NLAY, <span class="dv">1</span>)
+h %&gt;%<span class="st"> </span><span class="kw">filter</span>(GWE &gt;<span class="st"> </span><span class="dv">2000</span>) %&gt;%<span class="st"> </span><span class="kw">filter</span>(GWE &lt;<span class="st"> </span><span class="dv">10000</span>) %&gt;%
+<span class="st">            </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> GWE)) +
+<span class="st">            </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y =</span> (..count..)/<span class="kw">tapply</span>(..count.., ..PANEL.., sum)[..PANEL..]),
+                <span class="dt">colour =</span> <span class="st">&quot;black&quot;</span>, 
+                <span class="dt">fill =</span> <span class="st">&quot;blue&quot;</span>, 
+                <span class="dt">alpha =</span> <span class="fl">0.6</span>) +
+<span class="st">            </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">0.2</span>), 
+                <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.2</span>, <span class="fl">0.05</span>), 
+                <span class="dt">labels =</span> percent, 
+                <span class="dt">name =</span> <span class="st">&quot;FREQUENCY COUNT (PERCENT)&quot;</span>) +<span class="st">   </span>
+<span class="st">            </span><span class="kw">facet_wrap</span>(~LAY, <span class="dt">ncol =</span> <span class="dv">1</span>) +
+<span class="st">            </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;GROUNDWATER ELEVATION (FEET AMSL)&quot;</span>) +
+<span class="st">            </span><span class="kw">theme_bw</span>()</code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="data:image/png;base64,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" /></p>
+
+</body>
+</html>

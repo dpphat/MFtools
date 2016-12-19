@@ -292,7 +292,7 @@ readlpf <- function(rootname){
     MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
     FRMT <- substr(linin[indx], start = 21, stop = 30)
     FRMTREP <- as.integer(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    print(paste("FRMTREP[",K,"] = ", FRMTREP, sep = ""))
+    # print(paste("FRMTREP[",K,"] = ", FRMTREP, sep = ""))
     FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
     BLOCKEND <- ceiling(d$NCOL / FRMTREP) * d$NROW 
     
