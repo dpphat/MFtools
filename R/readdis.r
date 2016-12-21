@@ -51,9 +51,7 @@
 
 readdis <- function(rootname){
     infl <- paste(rootname, ".dis", sep = "")
-    conn <- file(infl, open = "r")
-    linin <- readLines(conn)
-    close(conn)
+    linin <- read_lines(infl)
     indx <- 2                       
     NLAY <- linin[indx] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[1]] %>% as.integer()
     NROW <- linin[indx] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[2]] %>% as.integer()
@@ -62,6 +60,7 @@ readdis <- function(rootname){
     ITMUNI <- linin[indx] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[5]] %>% as.integer()
     LENUNI <- linin[indx] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[6]] %>% as.integer()
     indx <- indx + 1
+    BLOCKSIZE <- NROW * NCOL
     BLOCKEND <- ceiling(NLAY / 50)
     LAYCBD <- linin[indx + seq(1:BLOCKEND) - 1] %>% 
               strsplit("\\s+") %>% 
@@ -87,12 +86,8 @@ readdis <- function(rootname){
         dX <- linin[indx + seq(1:BLOCKEND) - 1] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "")
         indx <- indx + BLOCKEND
         }
-    dX %<>% as.numeric()    
-    X <- c()
-    X[1] <- dX[1] / 2.      
-    for(j in 2:NCOL){
-        X[j] <- dX[j - 1] / 2. + dX[j] / 2. + X[j - 1]
-    }  
+    dX %<>% as.numeric()  
+    X <- c(dX[1] / 2., dX[1:(NCOL - 1)] / 2 + dX[2:NCOL] / 2) %>% cumsum()
 # ROW WIDTHS
 #----------------------------------------------------------    
     dY <- vector(mode = "numeric", length = NROW) 
@@ -113,13 +108,10 @@ readdis <- function(rootname){
         indx <- indx + BLOCKEND
         }
     dY %<>% as.numeric()    
-    Y[NROW] <- dY[NROW] / 2.      
-    for(i in seq(from = NROW - 1, to = 1, by = -1)){
-        Y[i] <- dY[i + 1] / 2. + dY[i] / 2. + Y[i + 1]
-    }
+    Y <- sum(dY) - (c(dY[1] / 2., dY[1:(NROW - 1)] / 2. + dY[2:NROW] / 2.) %>% cumsum())
 # TOP ELEVATION
 #-----------------------------------------------------------
-    TOPin <- vector(mode = "numeric", length = NROW * NCOL) 
+    TOPin <- vector(mode = "numeric", length = BLOCKSIZE) 
     UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
     MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
     FRMT <- substr(linin[indx], start = 21, stop = 30)
@@ -128,7 +120,7 @@ readdis <- function(rootname){
     BLOCKEND <- (NROW * ceiling(NCOL / FRMTREP))  
     indx <- indx + 1
     if(UNI == 0){
-        TOPin <- rep(MULT, NROW * NCOL)
+        TOPin <- rep(MULT, BLOCKSIZE)
     }else{     
         TOPin <- linin[indx + seq(1:BLOCKEND) - 1] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "")
         indx <- indx + BLOCKEND
@@ -142,46 +134,54 @@ readdis <- function(rootname){
     
 # BOTTOM ELEVATIONS
 #-----------------------------------------------------------
-    BOTin <- vector(mode = "numeric", length = NLAY * NCOL * NROW)    
-    for(k in 1:NLAY){
-    UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-    MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
-    FRMT <- substr(linin[indx], start = 21, stop = 30)
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
-    BLOCKEND <- NROW * ceiling(NCOL / FRMTREP)  
-    indx <- indx + 1
-    if(UNI == 0){
-        FROM <- (k - 1) * NROW * NCOL + 1
-        TO <- k * NROW * NCOL
-        BOTin[FROM:TO] <- rep(MULT, NROW * NCOL)
-    }else{ 
-    FROM <- (k - 1) * NROW * NCOL + 1
-    TO <- k * NROW * NCOL
-    BOTin[FROM:TO] <- linin[indx + seq(1:BLOCKEND) - 1] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "")
-    indx <- indx + BLOCKEND
-    }    
-    }
-    BOTin %<>% as.numeric()
+    BOTin <- vector(mode = "numeric", length = NLAY * BLOCKSIZE)    
+    BOTHDG <- linin[grep("BOT", linin)]
+    HDGLOC <- grep("BOT", linin)
+    UNI <- substr(BOTHDG, start = 1, stop = 10) %>% as.integer()
+    MULT <- substr(BOTHDG, start = 11, stop = 20) %>% as.numeric()
+    # THIS INDEX WILL BE USED TO FILTER OUT LAYERS WITH UNIFORM BOTTOM ELEVATIONS
+    MULTFACT <- MULT
+    MULTFACT[MULTFACT != 1] <- 0
+    ##############################
+    FRMT <- substr(BOTHDG, start = 21, stop = 30)
+    FRMTREP <- regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT)) %>% lapply('[[', 1) %>% unlist() %>% as.integer()
+    BLOCKEND <- (NROW * ceiling(NCOL / FRMTREP))
+    LYR  <- substr(BOTHDG, start = 71, stop = nchar(BOTHDG)) %>% as.integer()
+    MULTLOC <- grep(0, UNI)
     
+    if(length(MULTLOC) > 0){
+    # SPECIFIED CELLS: CELL BOTTOM ELEVATIONS SPECIFED USING MULT
+    SPEC_CELLS <- rep(BLOCKSIZE * (MULTLOC - 1), each = BLOCKSIZE) + 1:(BLOCKSIZE)
+    # ARRAY CELLS
+    ARR_CELL   <- seq(1, NLAY * BLOCKSIZE) %>% setdiff(SPEC_CELLS)
+    BOTin[SPEC_CELLS] <- rep(MULT[MULTLOC], each = BLOCKSIZE)
+    BOT_END <- indx + (BLOCKEND * MULTFACT + 1) %>% cumsum() - 1
+    BOT_ARR_ROW <- indx:max(BOT_END) %>% setdiff(HDGLOC)
+    BOTin[ARR_CELL] <- linin[BOT_ARR_ROW] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "")
+    }else{    
+    BOT_END <- indx + (BLOCKEND * MULTFACT + 1) %>% cumsum() - 1
+    BOT_ARR_ROW <- indx:max(BOT_END) %>% setdiff(HDGLOC)
+    BOTin <- linin[BOT_ARR_ROW] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "")
+    }
+    
+    BOTin %<>% as.numeric()    
     BOT <- tibble::data_frame(
                       LAY = rep(1:NLAY, each = NCOL * NROW),
                       ROW = rep(rep(1:NROW, each = NCOL), NLAY), 
                       COL = rep(rep(seq(1, NCOL, 1), NROW), NLAY), 
                       BOT = BOTin) 
     rm(BOTin)  
-    
+    indx <- max(BOT_END) + 1
+#
+#----------------------------------------------------------------    
     PERLEN <- vector(mode = "numeric", length = NPER)
     NSTP <- vector(mode = "integer", length = NPER)
     TSMULT <- vector(mode = "numeric", length = NPER)
     SS <- vector(mode = "character", length = NPER)
-    for(Q in 1:NPER){
-        PERLEN[Q] <- linin[indx] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[1]] %>% as.numeric()
-        NSTP[Q]   <- linin[indx] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[2]] %>% as.integer()    
-        TSMULT[Q] <- linin[indx] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[3]] %>% as.numeric()
-        SS[Q]     <- linin[indx] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[4]] %>% as.character()                 
-        indx <- indx + 1 
-    }
+    PERLEN <- linin[indx:(indx + NPER - 1)] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[1]] %>% as.numeric()
+    NSTP   <- linin[indx:(indx + NPER - 1)] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[2]] %>% as.integer()    
+    TSMULT <- linin[indx:(indx + NPER - 1)] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[3]] %>% as.numeric()
+    SS     <- linin[indx:(indx + NPER - 1)] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "") %>% .[[4]] %>% as.character()                 
     DIS <- list(NLAY = NLAY,
                 NCOL = NCOL, 
                 NROW = NROW, 
