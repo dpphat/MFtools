@@ -176,10 +176,10 @@ readdis <- function(rootname){
     NSTP <- vector(mode = "integer", length = NPER)
     TSMULT <- vector(mode = "numeric", length = NPER)
     SS <- vector(mode = "character", length = NPER)
-    PERLEN <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[1]] %>% as.numeric()
-    NSTP   <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[2]] %>% as.integer()    
-    TSMULT <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[3]] %>% as.numeric()
-    SS     <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[4]] %>% as.character()                 
+    PERLEN <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[seq(1, 4 * NPER, 4)] %>% as.numeric()
+    NSTP   <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[seq(2, 4 * NPER, 4)] %>% as.integer()    
+    TSMULT <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[seq(3, 4 * NPER, 4)] %>% as.numeric()
+    SS     <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[seq(4, 4 * NPER, 4)] %>% as.character()                 
     DIS <- list(NLAY = NLAY,
                 NCOL = NCOL, 
                 NROW = NROW, 
