@@ -29,6 +29,7 @@ composed of the following vectors:
 \item{dY}{Cell Width Along Rows}
 \item{Y}{Cell Center Coordinate in the Model Coordinate System}
 \item{TOP}{Top Elevation of Layer 1}
+\item{TRANS} {Data frame composed of LAY, ROW, COL, dZ, PRSITY, ICBUND, SONC, where these values are defined as follows:}
 \item{dZ}{Layer Thicknesses}
 \item{PRSITY}{Porosity} 
 \item{ICBUND}{ICBUND array. See MT3DMS manual for a description of ICBUND}

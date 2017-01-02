@@ -19,6 +19,7 @@
 #' \item{dY}{Cell Width Along Rows}
 #' \item{Y}{Cell Center Coordinate in the Model Coordinate System}
 #' \item{TOP}{Top Elevation of Layer 1}
+#' \item{TRANS} {Data frame composed of LAY, ROW, COL, dZ, PRSITY, ICBUND, SONC, where these values are defined as follows:}
 #' \item{dZ}{Layer Thicknesses}
 #' \item{PRSITY}{Porosity} 
 #' \item{ICBUND}{ICBUND array. See MT3DMS manual for a description of ICBUND}
@@ -101,9 +102,7 @@
 
 readbtn <- function(rootname){
     infl <- paste(rootname, ".btn", sep = "")
-    conn <- file(infl, open = "r")
-    linin <- readLines(conn)
-    close(conn)
+    linin <- read_lines(infl)
     indx <- 3                      
     NLAY <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
     NROW <- substr(linin[indx], start = 11, stop = 20) %>% as.integer()
@@ -111,7 +110,8 @@ readbtn <- function(rootname){
     NPER <- substr(linin[indx], start = 31, stop = 40) %>% as.integer()
     NCOMP <- substr(linin[indx], start = 41, stop = 50) %>% as.integer()
     MCOMP <- substr(linin[indx], start = 51, stop = 60) %>% as.integer()
-    indx <- indx + 1
+    indx <- indx + 1	
+    BLOCKSIZE <- NROW * NCOL
     TUNIT <- substr(linin[indx], start = 1, stop = 4) %>% gsub("[[:space:]]", "", .)
     LUNIT <- substr(linin[indx], start = 5, stop = 8) %>% gsub("[[:space:]]", "", .)
     MUNIT <- substr(linin[indx], start = 9, stop = 12) %>% gsub("[[:space:]]", "", .)    
@@ -128,220 +128,119 @@ readbtn <- function(rootname){
               subset(. != "") %>% 
               as.integer()
 
-    indx <- indx + BLOCKEND       
+    indx <- indx + BLOCKEND  
+	HDGLOC      <- grep("\\(", linin)
+    HDG	        <- linin[HDGLOC]
+	UNI         <- substr(HDG, start = 1, stop = 10) %>% as.integer()
+	MULT        <- substr(HDG, start = 11, stop = 20) %>% as.numeric()
+	ARR_MULT   <- UNI / UNI
+	ARR_MULT[is.na(ARR_MULT)] <- 0	
+	MULTLOC     <- grep("^0$", UNI)
+    FRMT        <- substr(HDG, start = 21, stop = 30)
+	FRMTREP     <- regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT)) %>% lapply('[[', 1) %>% unlist() %>% as.integer()
+	BLOCK_START <- HDGLOC + 1
+	BLOCK_END   <- lead(BLOCK_START) - 2
+	BLOCK_LENGTH <- (NROW * ceiling(NCOL / FRMTREP))
+	BLOCK_END[length(BLOCK_END)] <- BLOCK_END[length(BLOCK_END) - 1] + BLOCK_LENGTH[length(BLOCK_END)] + 1
+    BLOCK_START <- BLOCK_START * ARR_MULT
+	BLOCK_END   <- BLOCK_END * ARR_MULT
+	CELL_INDX   <- Map(seq, BLOCK_START, BLOCK_END)
 # COLUMN WIDTHS
 #---------------------------------------------------------    
-    dX <- vector(mode = "numeric", length = NCOL) 
-    X <- vector(mode = "numeric", length = NCOL)  
-    UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-    MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
-    FRMT <- substr(linin[indx], start = 21, stop = 30)
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
-    BLOCKEND <- (ceiling(NCOL / FRMTREP))
-    indx <- indx + 1
-    if(UNI == 0){
-    dX <- rep(MULT, NCOL)
+    if(UNI[1] == 0){
+    dX <- rep(MULT[1], NCOL)
     }else{  
-        dX <- linin[indx + seq(1:BLOCKEND) - 1] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "")
-        indx <- indx + BLOCKEND
+        dX <- linin[CELL_INDX[[1]]] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
         }
-    dX %<>% as.numeric()    
-    X <- c()
-    X[1] <- dX[1] / 2.      
-    for(j in 2:NCOL){
-        X[j] <- dX[j - 1] / 2. + dX[j] / 2. + X[j - 1]
-    }    
-
+    dX %<>% as.numeric()  
+    X <- c(dX[1] / 2., dX[1:(NCOL - 1)] / 2 + dX[2:NCOL] / 2) %>% cumsum()
 # ROW WIDTHS
 #----------------------------------------------------------    
-    dY <- vector(mode = "numeric", length = NROW) 
-    Y <- vector(mode = "numeric", length = NROW)  
-    UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-    MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
-    FRMT <- substr(linin[indx], start = 21, stop = 30)
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
-    BLOCKEND <- (ceiling(NROW / FRMTREP))  
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]    
-    indx <- indx + 1
-    if(UNI == 0){
-    dY <- rep(MULT, NROW)
+    if(UNI[2] == 0){
+    dY <- rep(MULT[2], NROW)
     }else{ 
-        dY <- linin[indx + seq(1:BLOCKEND) - 1] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "")
-        indx <- indx + BLOCKEND
+        dY <- linin[CELL_INDX[[2]]] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
         }
     dY %<>% as.numeric()    
-    Y[NROW] <- dY[NROW] / 2.      
-    for(i in seq(from = NROW - 1, to = 1, by = -1)){
-        Y[i] <- dY[i + 1] / 2. + dY[i] / 2. + Y[i + 1]
-    }
+    Y <- sum(dY) - (c(dY[1] / 2., dY[1:(NROW - 1)] / 2. + dY[2:NROW] / 2.) %>% cumsum())
 # TOP ELEVATION
 #-----------------------------------------------------------
-    TOPin <- vector(mode = "numeric", length = NROW) 
-    UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-    MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
-    FRMT <- substr(linin[indx], start = 21, stop = 30)
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
-    BLOCKEND <- (NROW * ceiling(NCOL / FRMTREP))  
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]] 
-    indx <- indx + 1
-    if(UNI == 0){
-        TOPin <- rep(MULT, NROW * NCOL)
-    }else{ 
-        TOPin <- linin[indx + seq(1:BLOCKEND) - 1] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "")
-        indx <- indx + BLOCKEND
+    if(UNI[3] == 0){
+        TOPin <- rep(MULT[3], BLOCKSIZE)
+    }else{     
+        TOPin <- linin[CELL_INDX[[3]]] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
     } 
     TOPin %<>% as.numeric()    
         
     TOP <- tibble::data_frame(ROW = rep(1:NROW, each = NCOL), 
-                      COL = rep(seq(1, NCOL, 1), NROW), 
-                      TOP = TOPin) 
-    rm(TOPin)                      
-# CELL THICKNESS
+                              COL = rep(seq(1, NCOL, 1), NROW), 
+                              TOP = TOPin) 
+    rm(TOPin)
+# ASSIGN REMAINING PARAMETERS
 #--------------------------------------------------------------      
-    dZin <- vector(mode = "numeric", length = NLAY * NCOL * NROW)    
-    for(k in 1:NLAY){
-    UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-    MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
-    FRMT <- substr(linin[indx], start = 21, stop = 30)
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
-    BLOCKEND <- (NROW * ceiling(NCOL / FRMTREP))  
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]] 
-    indx <- indx + 1
-    if(UNI == 0){
-        FROM <- (k - 1) * NROW * NCOL + 1
-        TO <- k * NROW * NCOL
-        dZin[FROM:TO] <- rep(MULT, NROW * NCOL)
-    }else{ 
-    FROM <- (k - 1) * NROW * NCOL + 1
-    TO <- k * NROW * NCOL
-    dZin[FROM:TO] <- linin[indx + seq(1:BLOCKEND) - 1] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "")
-    indx <- indx + BLOCKEND
-    }    
-    }
-    dZin %<>% as.numeric()
-    
-    dZ <- tibble::data_frame(
+VAL <- c()
+if(length(MULTLOC[MULTLOC > 3]) > 1){
+    # SPECIFIED CELLS: CELL BOTTOM ELEVATIONS SPECIFED USING MULT
+	# SPEC_CELLS ARE THE CELLS THAT ARE DEFINED WHEN UNIT == 0
+	SPEC_CELLS <- rep(BLOCKSIZE * (MULTLOC[MULTLOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
+    # ARR_CELLS ARE SPEFICIED IN ARRAYS.
+	ARR_LOC    <- grep("^1$", ARR_MULT)
+	ARR_CELL   <- rep(BLOCKSIZE * (ARR_LOC[ARR_LOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
+    VAL[SPEC_CELLS] <- rep(MULT[MULTLOC[MULTLOC > 3]], each = BLOCKSIZE)
+    VAL[ARR_CELL] <- CELL_INDX[4:length(CELL_INDX)] %>% 
+	                 unlist() %>% 
+					 .[. > 0] %>% 
+					 linin[.] %>% 
+					 stringr::str_split("\\s+") %>% 
+					 unlist() %>% 
+					 subset(. != "")
+	}else{
+	VAL <- CELL_INDX[4:length(CELL_INDX)] %>% 
+	       unlist() %>% 
+		   linin[.] %>% 
+		   stringr::str_split("\\s+") %>% 
+		   unlist() %>% 
+		   subset(. != "")
+	}
+
+    dZ     <- VAL[1:(NLAY * BLOCKSIZE)] %>% 
+	          as.numeric()
+    PRSITY <- VAL[(NLAY * BLOCKSIZE + 1):(2 * NLAY * BLOCKSIZE)] %>% 
+	          as.numeric()
+    ICBUND <- VAL[(2 * NLAY * BLOCKSIZE + 1):(3 * NLAY * BLOCKSIZE)] %>%
+	          as.integer()
+    SCONC <-  VAL[(3 * NLAY * BLOCKSIZE + 1) : (4 * NLAY * BLOCKSIZE)] %>%
+	          as.numeric()			  
+	dim(SCONC) <- c(NLAY * BLOCKSIZE, NCOMP) 
+	SCONC      <- as_tibble(SCONC, validate = FALSE)
+	TRANS <- tibble::data_frame(
                       LAY = rep(1:NLAY, each = NCOL * NROW),
                       ROW = rep(rep(1:NROW, each = NCOL), NLAY), 
                       COL = rep(rep(seq(1, NCOL, 1), NROW), NLAY), 
-                      dZ = dZin) 
-    rm(dZin)    
-# POROSITY
-#--------------------------------------------------------------    
-    PRSITYin <- vector(mode = "numeric", length = NLAY * NCOL * NROW)
-    for(k in 1:NLAY){
-    UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-    MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
-    FRMT <- substr(linin[indx], start = 21, stop = 30)
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
-    BLOCKEND <- (NROW * ceiling(NCOL / FRMTREP))  
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]    
-    indx <- indx + 1
-    if(UNI == 0){
-    FROM <- (k - 1) * NROW * NCOL + 1
-    TO <- k * NROW * NCOL
-    PRSITYin[FROM:TO] <- rep(MULT, NROW * NCOL)
-    }else{ 
-    for(i in 1:BLOCKEND){    
-    FROM <- (k - 1) * NROW * NCOL + 1
-    TO   <- k * NROW * NCOL
-        PRSITYin[FROM:TO] <- linin[indx + seq(1:BLOCKEND) - 1] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "")
-    indx <- indx + BLOCKEND
-        }
-    }    
-    }  
-    PRSITYin %<>% as.numeric()    
-    PRSITY <- tibble::data_frame(
-                      LAY = rep(1:NLAY, each = NCOL * NROW), 
-                      ROW = rep(rep(1:NROW, each = NCOL), NLAY), 
-                      COL = rep(rep(seq(1, NCOL, 1), NROW), NLAY), 
-                      PRSITY = PRSITYin)  
-    rm(PRSITYin)                      
-# ICBUND
-#---------------------------------------------------------------    
-    ICBUNDin <- vector(mode = "integer", length = NLAY * NCOL * NROW)
-    for(k in 1:NLAY){
-    UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-    MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
-    FRMT <- substr(linin[indx], start = 21, stop = 30)
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
-    BLOCKEND <- ceiling(NCOL / FRMTREP) * NROW 
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]    
-    indx <- indx + 1
-    if(UNI == 0){    
-        FROM <- (k - 1) * NROW * NCOL + 1
-        TO <- k * NROW * NCOL
-        ICBUNDin[FROM:TO] <- rep(MULT, NROW * NCOL)
-    }else{ 
-    FROM <- (k - 1) * NROW * NCOL + 1
-    TO   <- k * NROW * NCOL 
-        ICBUNDin[FROM:TO] <- linin[indx + seq(1:BLOCKEND) - 1] %>% strsplit("\\s+") %>% unlist() %>% subset(. != "")
-        indx <- indx + BLOCKEND
-        }
-        }
-    ICBUNDin %<>% as.integer()    
-    ICBUND <- tibble::data_frame(
-                      LAY = rep(1:NLAY, each = NCOL * NROW) %>% as.integer(), 
-                      ROW = rep(rep(1:NROW, each = NCOL), NLAY) %>% as.integer(), 
-                      COL = rep(rep(seq(1, NCOL, 1), NROW), NLAY) %>% as.integer(), 
-                      ICBUND = ICBUNDin)
-    rm(ICBUNDin)    
-# SOURCE CONCENTRATION
-#----------------------------------------------------------------                      
-    SCONCin <- vector(mode = "numeric", length = MCOMP * NLAY * NCOL * NROW)
-    for(M in 1:MCOMP){
-        for(k in 1:NLAY){
-            UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-            MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
-            FRMT <- substr(linin[indx], start = 21, stop = 30)
-            FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-            FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
-            BLOCKEND <- NROW * ceiling(NCOL / FRMTREP)  
-            FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-            FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]    
-            indx <- indx + 1
-        if(UNI == 0){
-        SCONCin[FROM:TO] <- rep(MULT, NROW * NCOL)
-        }else{     
-            FROM <- (M - 1) * NLAY * NCOL * NROW + (k - 1) * NROW * NCOL + 1
-            TO <- M * k * NROW * NCOL     
-            SCONCin[FROM:TO] <- linin[indx + seq(1:BLOCKEND) - 1] %>% 
-                                strsplit("\\s+") %>% 
-                                unlist() %>% 
-                                subset(. != "")
-            indx <- indx + BLOCKEND
-                }
-            }    
-        } 
-    SCONCin %<>% as.numeric()
-    SCONC <- tibble::data_frame(
-                      MCOMP = rep(1:MCOMP, each = NLAY * NCOL * NROW) %>% as.integer(), 
-                      LAY = rep(rep(1:NLAY, each = NCOL * NROW), MCOMP) %>% as.integer(), 
-                      ROW = rep(rep(rep(1:NROW, each = NCOL), NLAY), MCOMP) %>% as.integer(), 
-                      COL = rep(rep(rep(seq(1, NCOL, 1), NROW), NLAY), MCOMP) %>% as.integer(), 
-                      SCONC = SCONCin %>% as.numeric())
-    rm(SCONCin)        
+                      dZ = dZ, 
+					  PRSITY = PRSITY, 
+					  ICBUND = ICBUND) %>%	
+					  bind_cols(SCONC) %>%
+					  select(LAY, 
+					         ROW, 
+							 COL, 
+							 dZ, 
+							 PRSITY, 
+							 ICBUND, 
+							 SCONC = starts_with("V")) %>%
+					  repair_names(prefix = "SCONC", sep = "_")
+rm(VAL)  
 # BACK ARRAYS
 #--------------------------------------------------------------
-    CINACT <- substring(linin[indx], 
+indx <- max(max(BLOCK_END), max(HDGLOC)) + 1    
+	CINACT <- substring(linin[indx], 
                         seq(1, nchar(linin[indx]), 10), 
                         seq(2, nchar(linin[indx]), 10))[[1]] %>% 
               gsub("[[:space:]]", "", .) %>% 
               as.numeric()
     THKMIN <- substring(linin[indx], 
                         seq(1, nchar(linin[indx]), 10), 
-                        seq(10, nchar(linin[indx]), 10)) %>% 
+                        seq(10, nchar(linin[indx]), 10))[[2]] %>% 
               gsub("[[:space:]]", "", .) %>% 
               as.numeric()   
     indx <- indx + 1
@@ -401,25 +300,25 @@ readbtn <- function(rootname){
                         )    
                         
     if(NOBS > 0){
-    for(i in 1:NOBS){
-    OBSLOC$OBS_WELL[i] <- i 
-    OBSLOC$LAY[i] <- substring(linin[indx], 1, 10) %>% 
+    OBSLOC_OBS_WELL <-  1:NOBS
+    OBSLOC_LAY <- substring(linin[indx:(indx + NOBS - 1)], 1, 10) %>% 
               gsub("[[:space:]]", "", .) %>% 
               as.integer()
-    OBSLOC$ROW[i] <- substring(linin[indx], 11, 20) %>% 
+    OBSLOC_ROW <- substring(linin[indx:(indx + NOBS - 1)], 11, 20) %>% 
               gsub("[[:space:]]", "", .) %>% 
               as.integer()    
-    OBSLOC$COL[i] <- substring(linin[indx], 21, 30) %>% 
+    OBSLOC_COL <- substring(linin[indx:(indx + NOBS - 1)], 21, 30) %>% 
               gsub("[[:space:]]", "", .) %>% 
               as.integer()
-    indx <- indx + 1              
-        }        
+	OBSLOC <- tibble::data_frame(
+                    OBS_WELL = OBSLOC_OBS_WELL, 
+                    LAY = OBSLOC_LAY, 
+                    ROW = OBSLOC_ROW, 
+                    COL = OBSLOC_COL
+                    )  			  
+    indx <- indx + NOBS       
     }                      
-  
-    L13 <- read.fwf(infl, 
-                    skip = indx, 
-                    widths = rep(10, 2), 
-                    n = 1)
+
     CHKMAS <- substring(linin[indx], 1, 10) %>% 
               gsub("[[:space:]]", "", .)
     NPRMAS <- substring(linin[indx], 11, 20) %>% 
@@ -440,11 +339,11 @@ readbtn <- function(rootname){
               )
                   
     for(Q in 1:NPER){
-        PERLEN[Q] <- substr(linin[indx + 1], start = 0, stop = 11) %>%
+        PERLEN <- substr(linin[indx], start = 0, stop = 11) %>%
                      as.numeric()    
-        NSTP[Q] <-   substr(linin[indx + 1], start = 11, stop = 20) %>%
+        NSTP[Q] <-   substr(linin[indx], start = 11, stop = 20) %>%
                      as.integer()    
-        TSMULT[Q] <- substr(linin[indx + 1], start = 21, stop = 30) %>%
+        TSMULT[Q] <- substr(linin[indx], start = 21, stop = 30) %>%
                      as.numeric()    
         indx <- indx + 1 
         if(TSMULT[[Q]] < 0){
@@ -491,10 +390,7 @@ readbtn <- function(rootname){
                 dY = dY, 
                 Y = Y, 
                 TOP = TOP, 
-                dZ = dZ, 
-                PRSITY = PRSITY, 
-                ICBUND = ICBUND, 
-                SCONC = SCONC, 
+                TRANS = TRANS, 
                 CINACT = CINACT, 
                 THKMIN = THKMIN, 
                 IFMTCN = IFMTCN, 
