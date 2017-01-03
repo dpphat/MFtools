@@ -59,11 +59,11 @@ masscalc <- function(BTN, HDS, UCN){
     NROW  <- b$NROW
     NSP   <- b$NPER
     NPRS  <- b$NPRS
-    POR   <- b$PRSITY$PRSITY
-    THICK <- b$dZ$dZ
+    POR   <- b$TRANS$PRSITY
+    THICK <- b$TRANS$dZ
     dX    <- b$dX
     dY    <- b$dY
-    dZ    <- b$dZ
+    dZ    <- b$TRANS %>% select(LAY, ROW, COL, dZ) 
     TOP   <- b$TOP$TOP
     BOTL1 <- b$TOP$TOP - dZ[dZ$LAY == 1, ]$dZ
     rm(TOP)
