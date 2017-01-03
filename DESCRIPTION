@@ -1,6 +1,6 @@
 Package: MFtools
 Title: This is a packages for reading MODFLOW and MT3DMS files
-Version: 0.0.0.9002
+Version: 0.0.0.9003
 Authors@R: person("Dan", "Puddephatt", email = "dan.puddephatt@ghd.com", role = c("aut", "cre"))
 Description: This package is designed for reading MODFLOW and MT3DMS output
     files (i.e., .hds file, .ucn file, .dis file).

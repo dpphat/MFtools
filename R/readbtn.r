@@ -69,7 +69,7 @@
 #' 
 #' # Find the average initial concentration assigned to the MT3DMS Model
 #' btn <- readbtn("T04")
-#' btn$SCONC %>% 
+#' btn$TRANS %>% 
 #' select(SCONC) %>%
 #' summarise(AVG = mean(SCONC))
 #'
@@ -80,7 +80,7 @@
 #'
 #' # Find the average initial concentration (> 5 µg/L) 
 #' # assigned to Layer 1 of the MT3DMS Model
-#' btn$SCONC %>% 
+#' btn$TRANS %>% 
 #' filter(LAY == 1) %>%
 #' select(SCONC) %>%
 #' filter(SCONC >= 5) %>%
@@ -92,7 +92,7 @@
 #' > 1 1096.754
 #'
 #' # Find the range of porosity values assigned to the model 
-#' btn$PRSITY %>%                 # Select the RCL Value table that contains the porosity values
+#' btn$TRANS %>%                  # Select the RCL Value table that contains the porosity values
 #' select(PRSITY) %>%             # Select the table column that contains porosity values
 #' t() %>%                        # Convert to a vector of values
 #' as.factor() %>%
@@ -110,7 +110,7 @@ readbtn <- function(rootname){
     NPER <- substr(linin[indx], start = 31, stop = 40) %>% as.integer()
     NCOMP <- substr(linin[indx], start = 41, stop = 50) %>% as.integer()
     MCOMP <- substr(linin[indx], start = 51, stop = 60) %>% as.integer()
-    indx <- indx + 1	
+    indx <- indx + 1    
     BLOCKSIZE <- NROW * NCOL
     TUNIT <- substr(linin[indx], start = 1, stop = 4) %>% gsub("[[:space:]]", "", .)
     LUNIT <- substr(linin[indx], start = 5, stop = 8) %>% gsub("[[:space:]]", "", .)
@@ -129,22 +129,22 @@ readbtn <- function(rootname){
               as.integer()
 
     indx <- indx + BLOCKEND  
-	HDGLOC      <- grep("\\(", linin)
-    HDG	        <- linin[HDGLOC]
-	UNI         <- substr(HDG, start = 1, stop = 10) %>% as.integer()
-	MULT        <- substr(HDG, start = 11, stop = 20) %>% as.numeric()
-	ARR_MULT   <- UNI / UNI
-	ARR_MULT[is.na(ARR_MULT)] <- 0	
-	MULTLOC     <- grep("^0$", UNI)
-    FRMT        <- substr(HDG, start = 21, stop = 30)
-	FRMTREP     <- regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT)) %>% lapply('[[', 1) %>% unlist() %>% as.integer()
-	BLOCK_START <- HDGLOC + 1
-	BLOCK_END   <- lead(BLOCK_START) - 2
-	BLOCK_LENGTH <- (NROW * ceiling(NCOL / FRMTREP))
-	BLOCK_END[length(BLOCK_END)] <- BLOCK_END[length(BLOCK_END) - 1] + BLOCK_LENGTH[length(BLOCK_END)] + 1
-    BLOCK_START <- BLOCK_START * ARR_MULT
-	BLOCK_END   <- BLOCK_END * ARR_MULT
-	CELL_INDX   <- Map(seq, BLOCK_START, BLOCK_END)
+    HDGLOC       <- grep("\\(", linin)
+    HDG          <- linin[HDGLOC]
+    UNI          <- substr(HDG, start = 1, stop = 10) %>% as.integer()
+    MULT         <- substr(HDG, start = 11, stop = 20) %>% as.numeric()
+    ARR_MULT     <- UNI / UNI
+    ARR_MULT[is.na(ARR_MULT)] <- 0    
+    MULTLOC      <- grep("^0$", UNI)
+    FRMT         <- substr(HDG, start = 21, stop = 30)
+    FRMTREP      <- regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT)) %>% lapply('[[', 1) %>% unlist() %>% as.integer()
+    BLOCK_START  <- HDGLOC + 1
+    BLOCK_END    <- lead(BLOCK_START) - 2
+    BLOCK_LENGTH <- (NROW * ceiling(NCOL / FRMTREP))
+    BLOCK_END[length(BLOCK_END)] <- BLOCK_END[length(BLOCK_END) - 1] + BLOCK_LENGTH[length(BLOCK_END)] + 1
+    BLOCK_START  <- BLOCK_START * ARR_MULT
+    BLOCK_END    <- BLOCK_END * ARR_MULT
+    CELL_INDX    <- Map(seq, BLOCK_START, BLOCK_END)
 # COLUMN WIDTHS
 #---------------------------------------------------------    
     if(UNI[1] == 0){
@@ -181,59 +181,59 @@ readbtn <- function(rootname){
 VAL <- c()
 if(length(MULTLOC[MULTLOC > 3]) > 1){
     # SPECIFIED CELLS: CELL BOTTOM ELEVATIONS SPECIFED USING MULT
-	# SPEC_CELLS ARE THE CELLS THAT ARE DEFINED WHEN UNIT == 0
-	SPEC_CELLS <- rep(BLOCKSIZE * (MULTLOC[MULTLOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
+    # SPEC_CELLS ARE THE CELLS THAT ARE DEFINED WHEN UNIT == 0
+    SPEC_CELLS <- rep(BLOCKSIZE * (MULTLOC[MULTLOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
     # ARR_CELLS ARE SPEFICIED IN ARRAYS.
-	ARR_LOC    <- grep("^1$", ARR_MULT)
-	ARR_CELL   <- rep(BLOCKSIZE * (ARR_LOC[ARR_LOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
+    ARR_LOC    <- grep("^1$", ARR_MULT)
+    ARR_CELL   <- rep(BLOCKSIZE * (ARR_LOC[ARR_LOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
     VAL[SPEC_CELLS] <- rep(MULT[MULTLOC[MULTLOC > 3]], each = BLOCKSIZE)
     VAL[ARR_CELL] <- CELL_INDX[4:length(CELL_INDX)] %>% 
-	                 unlist() %>% 
-					 .[. > 0] %>% 
-					 linin[.] %>% 
-					 stringr::str_split("\\s+") %>% 
-					 unlist() %>% 
-					 subset(. != "")
-	}else{
-	VAL <- CELL_INDX[4:length(CELL_INDX)] %>% 
-	       unlist() %>% 
-		   linin[.] %>% 
-		   stringr::str_split("\\s+") %>% 
-		   unlist() %>% 
-		   subset(. != "")
-	}
+                     unlist() %>% 
+                     .[. > 0] %>% 
+                     linin[.] %>% 
+                     stringr::str_split("\\s+") %>% 
+                     unlist() %>% 
+                     subset(. != "")
+    }else{
+    VAL <- CELL_INDX[4:length(CELL_INDX)] %>% 
+           unlist() %>% 
+           linin[.] %>% 
+           stringr::str_split("\\s+") %>% 
+           unlist() %>% 
+           subset(. != "")
+    }
 
     dZ     <- VAL[1:(NLAY * BLOCKSIZE)] %>% 
-	          as.numeric()
+              as.numeric()
     PRSITY <- VAL[(NLAY * BLOCKSIZE + 1):(2 * NLAY * BLOCKSIZE)] %>% 
-	          as.numeric()
+              as.numeric()
     ICBUND <- VAL[(2 * NLAY * BLOCKSIZE + 1):(3 * NLAY * BLOCKSIZE)] %>%
-	          as.integer()
-    SCONC <-  VAL[(3 * NLAY * BLOCKSIZE + 1) : (4 * NLAY * BLOCKSIZE)] %>%
-	          as.numeric()			  
-	dim(SCONC) <- c(NLAY * BLOCKSIZE, NCOMP) 
-	SCONC      <- as_tibble(SCONC, validate = FALSE)
-	TRANS <- tibble::data_frame(
+              as.integer()
+    SCONC <-  VAL[(3 * NLAY * BLOCKSIZE + 1) : (NLAY * BLOCKSIZE * (3 + NCOMP))] %>%
+              as.numeric()
+    dim(SCONC) <- c(NLAY * BLOCKSIZE, NCOMP) 
+    SCONC      <- as_tibble(SCONC, validate = FALSE)
+    TRANS <- tibble::data_frame(
                       LAY = rep(1:NLAY, each = NCOL * NROW),
                       ROW = rep(rep(1:NROW, each = NCOL), NLAY), 
                       COL = rep(rep(seq(1, NCOL, 1), NROW), NLAY), 
                       dZ = dZ, 
-					  PRSITY = PRSITY, 
-					  ICBUND = ICBUND) %>%	
-					  bind_cols(SCONC) %>%
-					  select(LAY, 
-					         ROW, 
-							 COL, 
-							 dZ, 
-							 PRSITY, 
-							 ICBUND, 
-							 SCONC = starts_with("V")) %>%
-					  repair_names(prefix = "SCONC", sep = "_")
+                      PRSITY = PRSITY, 
+                      ICBUND = ICBUND) %>%    
+                      bind_cols(SCONC) %>%
+                      select(LAY, 
+                             ROW, 
+                             COL, 
+                             dZ, 
+                             PRSITY, 
+                             ICBUND, 
+                             SCONC = starts_with("V")) %>%
+                      repair_names(prefix = "SCONC", sep = "_")
 rm(VAL)  
 # BACK ARRAYS
 #--------------------------------------------------------------
 indx <- max(max(BLOCK_END), max(HDGLOC)) + 1    
-	CINACT <- substring(linin[indx], 
+    CINACT <- substring(linin[indx], 
                         seq(1, nchar(linin[indx]), 10), 
                         seq(2, nchar(linin[indx]), 10))[[1]] %>% 
               gsub("[[:space:]]", "", .) %>% 
@@ -310,12 +310,12 @@ indx <- max(max(BLOCK_END), max(HDGLOC)) + 1
     OBSLOC_COL <- substring(linin[indx:(indx + NOBS - 1)], 21, 30) %>% 
               gsub("[[:space:]]", "", .) %>% 
               as.integer()
-	OBSLOC <- tibble::data_frame(
+    OBSLOC <- tibble::data_frame(
                     OBS_WELL = OBSLOC_OBS_WELL, 
                     LAY = OBSLOC_LAY, 
                     ROW = OBSLOC_ROW, 
                     COL = OBSLOC_COL
-                    )  			  
+                    )                
     indx <- indx + NOBS       
     }                      
 

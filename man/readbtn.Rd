@@ -78,7 +78,7 @@ readbtn("T04")
 
 # Find the average initial concentration assigned to the MT3DMS Model
 btn <- readbtn("T04")
-btn$SCONC \%>\% 
+btn$TRANS \%>\% 
 select(SCONC) \%>\%
 summarise(AVG = mean(SCONC))
 
@@ -89,7 +89,7 @@ summarise(AVG = mean(SCONC))
 
 # Find the average initial concentration (> 5 µg/L) 
 # assigned to Layer 1 of the MT3DMS Model
-btn$SCONC \%>\% 
+btn$TRANS \%>\% 
 filter(LAY == 1) \%>\%
 select(SCONC) \%>\%
 filter(SCONC >= 5) \%>\%
@@ -101,7 +101,7 @@ summarise(AVG = mean(SCONC))
 > 1 1096.754
 
 # Find the range of porosity values assigned to the model 
-btn$PRSITY \%>\%                 # Select the RCL Value table that contains the porosity values
+btn$TRANS \%>\%                  # Select the RCL Value table that contains the porosity values
 select(PRSITY) \%>\%             # Select the table column that contains porosity values
 t() \%>\%                        # Convert to a vector of values
 as.factor() \%>\%
