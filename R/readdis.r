@@ -11,9 +11,7 @@
 #' \item{LENUNI}{Atomic Vector Indicating the Length Unit of Model Data : 0 = Undefined, 1 = Feet, 2 = Meters, 3 = Centimeters}
 #' \item{LAYCBD}{Flag With One Value for Each Model Layer that Indicates Whether or Not a Layer has a Quasi-3D Confining Bed Below it. 0 Indicates No Confining Bed and Not 0 Indicates Confining Bed}
 #' \item{dX}{Cell Width Along Columns}
-#' \item{X}{Cell Center Coordinate in the Model Coordinate System}
 #' \item{dY}{Cell Width Along Rows}
-#' \item{Y}{Cell Center Coordinate in the Model Coordinate System}
 #' \item{TOP}{Top Elevation of Layer 1}
 #' \item{BOT}{Bottom Elevation of Each Model Cell or a Quasi-3D Confining Bed}
 #' \item{PERLEN}{Length of Each Stress Period}
@@ -52,13 +50,31 @@
 readdis <- function(rootname){
     infl <- paste(rootname, ".dis", sep = "")
     linin <- read_lines(infl)
-    indx <- 2                       
+    indx <- max(grep("#", linin)) + 1                       
     NLAY <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[1]] %>% as.integer()
     NROW <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[2]] %>% as.integer()
     NCOL <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[3]] %>% as.integer()
     NPER <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[4]] %>% as.integer()
     ITMUNI <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[5]] %>% as.integer()
     LENUNI <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[6]] %>% as.integer()
+
+    HDGLOC       <- grep("\\(", linin)
+    HDG          <- linin[HDGLOC]
+    UNI          <- substr(HDG, start = 1, stop = 10) %>% as.integer()
+    MULT         <- substr(HDG, start = 11, stop = 20) %>% as.numeric()
+    ARR_MULT     <- UNI / UNI
+    ARR_MULT[is.na(ARR_MULT)] <- 0    
+    MULTLOC      <- grep("^0$", UNI)
+    FRMT         <- substr(HDG, start = 21, stop = 30)
+    FRMTREP      <- regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT)) %>% lapply('[[', 1) %>% unlist() %>% as.integer()
+    BLOCK_START  <- HDGLOC + 1
+    BLOCK_END    <- lead(BLOCK_START) - 2
+    BLOCK_LENGTH <- (NROW * ceiling(NCOL / FRMTREP))
+    BLOCK_END[length(BLOCK_END)] <- BLOCK_END[length(BLOCK_END) - 1] + BLOCK_LENGTH[length(BLOCK_END)] + 1
+    BLOCK_START  <- BLOCK_START * ARR_MULT
+    BLOCK_END    <- BLOCK_END * ARR_MULT
+    CELL_INDX    <- Map(seq, BLOCK_START, BLOCK_END)
+    
     indx <- indx + 1
     BLOCKSIZE <- NROW * NCOL
     BLOCKEND <- ceiling(NLAY / 50)
@@ -68,9 +84,9 @@ readdis <- function(rootname){
               subset(. != "") %>% 
               as.integer()
 
-    indx <- indx + BLOCKEND
 # COLUMN WIDTHS
 #---------------------------------------------------------    
+    indx <- HDGLOC[1]
     dX <- vector(mode = "numeric", length = NCOL) 
     X <- vector(mode = "numeric", length = NCOL)      
     UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
@@ -84,12 +100,12 @@ readdis <- function(rootname){
     dX <- rep(MULT, NCOL)
     }else{  
         dX <- linin[indx + seq(1:BLOCKEND) - 1] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
-        indx <- indx + BLOCKEND
         }
     dX %<>% as.numeric()  
     X <- c(dX[1] / 2., dX[1:(NCOL - 1)] / 2 + dX[2:NCOL] / 2) %>% cumsum()
 # ROW WIDTHS
 #----------------------------------------------------------    
+    indx <- HDGLOC[2]
     dY <- vector(mode = "numeric", length = NROW) 
     Y <- vector(mode = "numeric", length = NROW)  
     UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
@@ -105,12 +121,12 @@ readdis <- function(rootname){
     dY <- rep(MULT, NROW)
     }else{ 
         dY <- linin[indx + seq(1:BLOCKEND) - 1] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
-        indx <- indx + BLOCKEND
         }
     dY %<>% as.numeric()    
     Y <- sum(dY) - (c(dY[1] / 2., dY[1:(NROW - 1)] / 2. + dY[2:NROW] / 2.) %>% cumsum())
 # TOP ELEVATION
 #-----------------------------------------------------------
+    indx <- HDGLOC[3]
     TOPin <- vector(mode = "numeric", length = BLOCKSIZE) 
     UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
     MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
@@ -123,53 +139,56 @@ readdis <- function(rootname){
         TOPin <- rep(MULT, BLOCKSIZE)
     }else{     
         TOPin <- linin[indx + seq(1:BLOCKEND) - 1] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
-        indx <- indx + BLOCKEND
     } 
     TOPin %<>% as.numeric()    
         
     TOP <- tibble::data_frame(ROW = rep(1:NROW, each = NCOL), 
-                              COL = rep(seq(1, NCOL, 1), NROW), 
+                              COL = rep(seq(1, NCOL, 1), NROW),  
+                              X   = rep(X, NROW), 
+                              Y   = rep(Y, each = NCOL), 
                               TOP = TOPin) 
     rm(TOPin)
     
 # BOTTOM ELEVATIONS
 #-----------------------------------------------------------
-    BOTin <- vector(mode = "numeric", length = NLAY * BLOCKSIZE)    
-    BOTHDG <- linin[grep("BOT", linin)]
-    HDGLOC <- grep("BOT", linin)
-    UNI <- substr(BOTHDG, start = 1, stop = 10) %>% as.integer()
-    MULT <- substr(BOTHDG, start = 11, stop = 20) %>% as.numeric()
-    # THIS INDEX WILL BE USED TO FILTER OUT LAYERS WITH UNIFORM BOTTOM ELEVATIONS
-    MULTFACT <- MULT
-    MULTFACT[MULTFACT != 1] <- 0
-    ##############################
-    FRMT <- substr(BOTHDG, start = 21, stop = 30)
-    FRMTREP <- regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT)) %>% lapply('[[', 1) %>% unlist() %>% as.integer()
-    BLOCKEND <- (NROW * ceiling(NCOL / FRMTREP))
-    LYR  <- substr(BOTHDG, start = 71, stop = nchar(BOTHDG)) %>% as.integer()
-    MULTLOC <- grep(0, UNI)
-    BOT_END <- indx + (BLOCKEND * MULTFACT + 1) %>% cumsum() - 1
-    BOT_INDX <- Map(seq, HDGLOC + 1, BOT_END) %>% .[lapply(., length) > 2] %>% unlist()
-    
-    if(length(MULTLOC) > 0){
+    indx <- HDGLOC[4]
+    #BOTin <- vector(mode = "numeric", length = NLAY * BLOCKSIZE)    
+
+    VAL <- vector(mode = "numeric", length = NLAY * BLOCKSIZE)
+if(length(MULTLOC[MULTLOC > 3]) > 1){
     # SPECIFIED CELLS: CELL BOTTOM ELEVATIONS SPECIFED USING MULT
-    SPEC_CELLS <- rep(BLOCKSIZE * (MULTLOC - 1), each = BLOCKSIZE) + 1:(BLOCKSIZE)
-    # ARRAY CELLS
-    ARR_CELL   <- seq(1, NLAY * BLOCKSIZE) %>% .[!(. %in% SPEC_CELLS)]
-    BOTin[SPEC_CELLS] <- rep(MULT[MULTLOC], each = BLOCKSIZE)
-    BOTin[ARR_CELL] <- linin[BOT_INDX] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
-    }else{    
-    BOTin <- linin[BOT_INDX] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
+    # SPEC_CELLS ARE THE CELLS THAT ARE DEFINED WHEN UNIT == 0
+    SPEC_CELLS <- rep(BLOCKSIZE * (MULTLOC[MULTLOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
+    # ARR_CELLS ARE SPEFICIED IN ARRAYS.
+    ARR_LOC    <- grep("^1$", ARR_MULT)
+    ARR_CELL   <- rep(BLOCKSIZE * (ARR_LOC[ARR_LOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
+    VAL[SPEC_CELLS] <- rep(MULT[MULTLOC[MULTLOC > 3]], each = BLOCKSIZE)
+    VAL[ARR_CELL] <- CELL_INDX[4:length(CELL_INDX)] %>% 
+                     unlist() %>% 
+                     .[. > 0] %>% 
+                     linin[.] %>% 
+                     stringr::str_split("\\s+") %>% 
+                     unlist() %>% 
+                     subset(. != "")
+    }else{
+    VAL <- CELL_INDX[4:length(CELL_INDX)] %>% 
+           unlist() %>% 
+           linin[.] %>% 
+           stringr::str_split("\\s+") %>% 
+           unlist() %>% 
+           subset(. != "")
     }
     
-    BOTin %<>% as.numeric()    
+    VAL %<>% as.numeric()    
     BOT <- tibble::data_frame(
                       LAY = rep(1:NLAY, each = NCOL * NROW),
                       ROW = rep(rep(1:NROW, each = NCOL), NLAY), 
                       COL = rep(rep(seq(1, NCOL, 1), NROW), NLAY), 
-                      BOT = BOTin) 
-    rm(BOTin)  
-    indx <- max(BOT_END) + 1
+                      X   = rep(rep(X, NROW), NLAY), 
+                      Y   = rep(rep(Y, each = NCOL), NLAY), 
+                      BOT = VAL) 
+    rm(VAL)  
+    indx <- max(BLOCK_END) + 1
 #
 #----------------------------------------------------------------    
     PERLEN <- vector(mode = "numeric", length = NPER)
@@ -188,9 +207,7 @@ readdis <- function(rootname){
                 LENUNI = LENUNI, 
                 LAYCBD = LAYCBD, 
                 dX = dX, 
-                X = X, 
                 dY = dY, 
-                Y = Y, 
                 TOP = TOP, 
                 BOT = BOT, 
                 PERLEN = PERLEN, 

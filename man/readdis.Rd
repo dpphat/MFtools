@@ -21,9 +21,7 @@ composed of the following vectors:
 \item{LENUNI}{Atomic Vector Indicating the Length Unit of Model Data : 0 = Undefined, 1 = Feet, 2 = Meters, 3 = Centimeters}
 \item{LAYCBD}{Flag With One Value for Each Model Layer that Indicates Whether or Not a Layer has a Quasi-3D Confining Bed Below it. 0 Indicates No Confining Bed and Not 0 Indicates Confining Bed}
 \item{dX}{Cell Width Along Columns}
-\item{X}{Cell Center Coordinate in the Model Coordinate System}
 \item{dY}{Cell Width Along Rows}
-\item{Y}{Cell Center Coordinate in the Model Coordinate System}
 \item{TOP}{Top Elevation of Layer 1}
 \item{BOT}{Bottom Elevation of Each Model Cell or a Quasi-3D Confining Bed}
 \item{PERLEN}{Length of Each Stress Period}
