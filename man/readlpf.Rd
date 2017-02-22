@@ -107,4 +107,3 @@ p <- readlpf("F95")
 p$PROPS \%>\% group_by(LAY) \%>\% summarise(MIN_K = min(HK), MEDIAN_K = median(HK), MAX_K = max(HK))
 
 }
-

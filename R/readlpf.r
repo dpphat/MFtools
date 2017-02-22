@@ -113,10 +113,8 @@
 readlpf <- function(rootname){
     infl <- paste(rootname, ".lpf", sep = "")
     d <- readdis(rootname)           
-    conn <- file(infl, open = "r")
-    linin <- readLines(conn)
-    close(conn)
-    indx <- 2    
+    linin <- read_lines(infl)
+    indx <- max(grep("#", linin)) + 1
     ILPFCB <- linin[indx] %>% 
               strsplit("\\s+") %>% 
               unlist() %>% 
@@ -149,19 +147,19 @@ readlpf <- function(rootname){
               unlist() %>% 
               subset(. != "") %>% 
               as.integer()     
-    indx <- indx + BLOCKEND              
+    indx <- indx + BLOCKEND
     CHANI <- linin[indx + seq(1:BLOCKEND_NUM) - 1] %>% 
               strsplit("\\s+") %>% 
               unlist() %>% 
               subset(. != "") %>% 
               as.numeric()
-    indx <- indx + BLOCKEND_NUM              
+    indx <- indx + BLOCKEND_NUM
     LAYVKA <- linin[indx + seq(1:BLOCKEND) - 1] %>% 
               strsplit("\\s+") %>% 
               unlist() %>% 
               subset(. != "") %>% 
               as.integer()    
-    indx <- indx + BLOCKEND              
+    indx <- indx + BLOCKEND
     LAYWET <- linin[indx + seq(1:BLOCKEND) - 1] %>% 
               strsplit("\\s+") %>% 
               unlist() %>% 

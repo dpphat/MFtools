@@ -32,4 +32,3 @@ composed of the following columns:
 \examples{
 readhds("F95", NLAY = 8, NTTS = 16)
 }
-

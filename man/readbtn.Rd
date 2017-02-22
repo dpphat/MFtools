@@ -87,7 +87,7 @@ summarise(AVG = mean(SCONC))
 >      <dbl>
 > 1 17.77554
 
-# Find the average initial concentration (> 5 µg/L) 
+# Find the average initial concentration (> 5 Âµg/L) 
 # assigned to Layer 1 of the MT3DMS Model
 btn$TRANS \%>\% 
 filter(LAY == 1) \%>\%
@@ -109,4 +109,3 @@ levels()
 
 > [1] "0.15" "0.21" "0.25" "0.4" 
 }
-

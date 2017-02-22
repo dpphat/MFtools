@@ -22,4 +22,3 @@ readnoflow(FILE, rootname)
 \examples{
 readnoflow(FILE = NF.dat, rootname = "FF_INIT")
 }
-

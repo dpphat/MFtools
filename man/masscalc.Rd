@@ -62,4 +62,3 @@ m \%>\% filter(LAY == 1) \%>\%
 
 # Note: the total mass is in units of lbs
 }
-

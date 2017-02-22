@@ -21,4 +21,3 @@ writeucn(ucn, ofl)
 \examples{
 writeucn(ucn = u, ofl = "T04R1.ucn")
 }
-

@@ -32,4 +32,3 @@ composed of the following elements:
 \examples{
 readucn("MT3DMS001S", NLAY = 8, NTTS = 22)
 }
-
