@@ -1,7 +1,7 @@
 MFtools README
 ================
 Dan Puddephatt
-2017-01-25
+2017-05-23
 
 The MFtools library is used for investigating the input and output ffiles from MODFLOW simulations. The library is based on fixed-width file formats as are generated when using Groundwater Vistas. This library has been tested using Groundwater Vistas files. The library includes functions for the following tasks:
 
@@ -15,19 +15,17 @@ The MFtools library is used for investigating the input and output ffiles from M
 
 The library also includes a utility function for calculating contaminant mass based on information from the headsave file (i.e., saturated thickness), porosity read from the basic transport package, and concentrations from the unformatted concentration file (masscalc(BTN, HDS, UCN))
 
-The package includes a set of MODFLOW files from the Texas Water Development Board (TWDB) Groundwater Availability Model (GAM) for the Edwards-Trinity (High Plains) Aquifer in Texas and New Mexico.
-
 The functions from the MFtools library use rootnames to read files. Rootnames are based on the MODFLOW rootname convention such that files consist of a rootname and an extension that describes the MODFLOW file.
 
-For the example using the TWDB GAM the rootname can be identified as follows (NOTE that by my personal convention my script headings include the libraries that I will be using):
+(NOTE that by my personal convention my script headings include the libraries that I will be using):
 
 ``` r
 library(MFtools)
 library(tidyverse)
 library(magrittr)
 library(scales)
-rnm <- system.file("extdata", "Ogll_sv2.01_ss.dis", package = "MFtools") %>%
-        tools::file_path_sans_ext()
+
+rnm <- ROOT_NM
 ```
 
 With the rootname we can now read in the discretization file

@@ -27,7 +27,7 @@ body {
 
 <h1 id="mftools-readme">MFtools README</h1>
 <p>Dan Puddephatt<br />
-2017-01-25</p>
+2017-05-23</p>
 <p>The MFtools library is used for investigating the input and output ffiles from MODFLOW simulations. The library is based on fixed-width file formats as are generated when using Groundwater Vistas. This library has been tested using Groundwater Vistas files. The library includes functions for the following tasks:</p>
 <ul>
 <li>Reading the discritization file (readdis(rootname))</li>
@@ -39,15 +39,14 @@ body {
 <li>Writing the unformatted concentration file based on a concentration dataframe (writeucn(ucn, ofl))</li>
 </ul>
 <p>The library also includes a utility function for calculating contaminant mass based on information from the headsave file (i.e., saturated thickness), porosity read from the basic transport package, and concentrations from the unformatted concentration file (masscalc(BTN, HDS, UCN))</p>
-<p>The package includes a set of MODFLOW files from the Texas Water Development Board (TWDB) Groundwater Availability Model (GAM) for the Edwards-Trinity (High Plains) Aquifer in Texas and New Mexico.</p>
 <p>The functions from the MFtools library use rootnames to read files. Rootnames are based on the MODFLOW rootname convention such that files consist of a rootname and an extension that describes the MODFLOW file.</p>
-<p>For the example using the TWDB GAM the rootname can be identified as follows (NOTE that by my personal convention my script headings include the libraries that I will be using):</p>
+<p>(NOTE that by my personal convention my script headings include the libraries that I will be using):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(MFtools)
 <span class="kw">library</span>(tidyverse)
 <span class="kw">library</span>(magrittr)
 <span class="kw">library</span>(scales)
-rnm &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Ogll_sv2.01_ss.dis&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;MFtools&quot;</span>) %&gt;%
-<span class="st">        </span>tools::<span class="kw">file_path_sans_ext</span>()</code></pre></div>
+
+rnm &lt;-<span class="st"> </span>ROOT_NM</code></pre></div>
 <p>With the rootname we can now read in the discretization file</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw">readdis</span>(rnm)
 d</code></pre></div>
