@@ -1,9 +1,9 @@
 MFtools README
 ================
 Dan Puddephatt
-2017-05-23
+2017-06-13
 
-The MFtools library is used for investigating the input and output ffiles from MODFLOW simulations. The library is based on fixed-width file formats as are generated when using Groundwater Vistas. This library has been tested using Groundwater Vistas files. The library includes functions for the following tasks:
+The MFtools library is used for investigating the input and output files from MODFLOW simulations. The library is based on fixed-width file formats as are generated when using Groundwater Vistas. This library has been tested using Groundwater Vistas files. The library includes functions for the following tasks:
 
 -   Reading the discritization file (readdis(rootname))
 -   Reading the layer property flow file (readlpf(rootname))
@@ -102,34 +102,34 @@ d
     ## [267] 5280 5280 5280 5280
     ## 
     ## $TOP
-    ## # A tibble: 78,300 × 5
+    ## # A tibble: 78,300 x 5
     ##      ROW   COL     X       Y    TOP
     ##    <int> <dbl> <dbl>   <dbl>  <dbl>
-    ## 1      1     1  2640 1422960 2368.4
-    ## 2      1     2  7920 1422960 2368.4
-    ## 3      1     3 13200 1422960 2368.4
-    ## 4      1     4 18480 1422960 2368.4
-    ## 5      1     5 23760 1422960 2368.4
-    ## 6      1     6 29040 1422960 2368.4
-    ## 7      1     7 34320 1422960 2368.4
-    ## 8      1     8 39600 1422960 2368.4
-    ## 9      1     9 44880 1422960 2368.4
+    ##  1     1     1  2640 1422960 2368.4
+    ##  2     1     2  7920 1422960 2368.4
+    ##  3     1     3 13200 1422960 2368.4
+    ##  4     1     4 18480 1422960 2368.4
+    ##  5     1     5 23760 1422960 2368.4
+    ##  6     1     6 29040 1422960 2368.4
+    ##  7     1     7 34320 1422960 2368.4
+    ##  8     1     8 39600 1422960 2368.4
+    ##  9     1     9 44880 1422960 2368.4
     ## 10     1    10 50160 1422960 2368.4
     ## # ... with 78,290 more rows
     ## 
     ## $BOT
-    ## # A tibble: 313,200 × 6
+    ## # A tibble: 313,200 x 6
     ##      LAY   ROW   COL     X       Y    BOT
     ##    <int> <int> <dbl> <dbl>   <dbl>  <dbl>
-    ## 1      1     1     1  2640 1422960 2363.4
-    ## 2      1     1     2  7920 1422960 2363.4
-    ## 3      1     1     3 13200 1422960 2363.4
-    ## 4      1     1     4 18480 1422960 2363.4
-    ## 5      1     1     5 23760 1422960 2363.4
-    ## 6      1     1     6 29040 1422960 2363.4
-    ## 7      1     1     7 34320 1422960 2363.4
-    ## 8      1     1     8 39600 1422960 2363.4
-    ## 9      1     1     9 44880 1422960 2363.4
+    ##  1     1     1     1  2640 1422960 2363.4
+    ##  2     1     1     2  7920 1422960 2363.4
+    ##  3     1     1     3 13200 1422960 2363.4
+    ##  4     1     1     4 18480 1422960 2363.4
+    ##  5     1     1     5 23760 1422960 2363.4
+    ##  6     1     1     6 29040 1422960 2363.4
+    ##  7     1     1     7 34320 1422960 2363.4
+    ##  8     1     1     8 39600 1422960 2363.4
+    ##  9     1     1     9 44880 1422960 2363.4
     ## 10     1     1    10 50160 1422960 2363.4
     ## # ... with 313,190 more rows
     ## 
@@ -215,18 +215,18 @@ p
     ## NULL
     ## 
     ## $PROPS
-    ## # A tibble: 313,200 × 10
+    ## # A tibble: 313,200 x 10
     ##      LAY   ROW   COL    HK  HANI   VKA    Ss    Sy VKCBD WETDRY
     ##    <int> <int> <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
-    ## 1      1     1     1   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 2      1     1     2   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 3      1     1     3   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 4      1     1     4   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 5      1     1     5   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 6      1     1     6   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 7      1     1     7   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 8      1     1     8   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 9      1     1     9   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  1     1     1     1   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  2     1     1     2   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  3     1     1     3   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  4     1     1     4   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  5     1     1     5   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  6     1     1     6   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  7     1     1     7   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  8     1     1     8   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  9     1     1     9   2.5    NA  0.25  0.15  0.15    NA      0
     ## 10     1     1    10   2.5    NA  0.25  0.15  0.15    NA      0
     ## # ... with 313,190 more rows
 
@@ -236,18 +236,18 @@ The .lpf file has lots of really useful information. We can isolate this informa
 p$PROPS
 ```
 
-    ## # A tibble: 313,200 × 10
+    ## # A tibble: 313,200 x 10
     ##      LAY   ROW   COL    HK  HANI   VKA    Ss    Sy VKCBD WETDRY
     ##    <int> <int> <int> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
-    ## 1      1     1     1   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 2      1     1     2   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 3      1     1     3   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 4      1     1     4   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 5      1     1     5   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 6      1     1     6   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 7      1     1     7   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 8      1     1     8   2.5    NA  0.25  0.15  0.15    NA      0
-    ## 9      1     1     9   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  1     1     1     1   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  2     1     1     2   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  3     1     1     3   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  4     1     1     4   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  5     1     1     5   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  6     1     1     6   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  7     1     1     7   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  8     1     1     8   2.5    NA  0.25  0.15  0.15    NA      0
+    ##  9     1     1     9   2.5    NA  0.25  0.15  0.15    NA      0
     ## 10     1     1    10   2.5    NA  0.25  0.15  0.15    NA      0
     ## # ... with 313,190 more rows
 
@@ -255,7 +255,7 @@ p$PROPS
 p$PROPS %>% group_by(LAY) %>% summarise(MIN = min(HK), MEDIAN = median(HK), MAX = max(HK))
 ```
 
-    ## # A tibble: 4 × 4
+    ## # A tibble: 4 x 4
     ##     LAY   MIN MEDIAN    MAX
     ##   <int> <dbl>  <dbl>  <dbl>
     ## 1     1 2.500    2.5 1374.9

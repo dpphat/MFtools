@@ -4,7 +4,7 @@
 \alias{readhds}
 \title{Read MODFLOW .hds File}
 \usage{
-readhds(rootname, NLAY, NTTS)
+readhds(rootname, NLAY, NPER)
 }
 \arguments{
 \item{rootname}{This is the rootname of the flow model (i.e., "F95")}
@@ -12,7 +12,7 @@ readhds(rootname, NLAY, NTTS)
 \item{NLAY}{This is the number of layers assigned to the model and needs to be 
 assigned}
 
-\item{NTTS}{This is the number of transport time steps that are printed to the .hds file. This number
+\item{NPER}{This is the number of stress periods that are printed to the .hds file. This number
 can be obtained from the .dis file}
 }
 \description{

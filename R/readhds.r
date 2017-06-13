@@ -15,15 +15,15 @@
 #' @param rootname This is the rootname of the flow model (i.e., "F95")
 #' @param NLAY This is the number of layers assigned to the model and needs to be 
 #'             assigned
-#' @param NTTS This is the number of transport time steps that are printed to the .hds file. This number
+#' @param NPER This is the number of stress periods that are printed to the .hds file. This number
 #' can be obtained from the .dis file
 #' @export
 #' @examples
 #' readhds("F95", NLAY = 8, NTTS = 16)
 
-readhds <- function(rootname, NLAY, NTTS){
+readhds <- function(rootname, NLAY, NPER){
     # NLAY IS THE NUMBER OF LAYERS IN THE MODEL
-	# NTTS IS THE NUMBER OF TRANSPORT TIME STEPS IN THE MODEL
+	# NPER IS THE NUMBER OF TRANSPORT TIME STEPS IN THE MODEL
     hdsname <- paste(rootname, ".hds", sep = "")	
 	to.read <- file(hdsname, "rb")	
 	TRANS <- c()
@@ -47,7 +47,7 @@ readhds <- function(rootname, NLAY, NTTS){
 	out <- list(TRANS, STP, PERLEN, TIME, TEXT, NC, NR, LAY, GWE)
 	return(out)			
     }	
-	for(Q in 1:NTTS){
+	for(Q in 1:NPER){
 	    for(K in 1:NLAY){
 		    dat[[length(dat) + 1]] <- readblock()
 		}
@@ -67,8 +67,8 @@ readhds <- function(rootname, NLAY, NTTS){
 		   PERLEN = rep(PERLEN, each = (NC * NR)) %>% as.numeric(), 
 		   TIME = rep(TIME, each = (NC * NR)) %>% as.numeric(), 
 		   LAY = rep(LAY, each = (NC * NR)) %>% as.integer(),
-		   ROW = rep(rep(rep(1:NR, each = NC), NLAY), NTTS) %>% as.integer(), 
-		   COL = rep(rep(rep(seq(1, NC, 1), NR), NLAY), NTTS) %>% as.integer(),
+		   ROW = rep(rep(rep(1:NR, each = NC), NLAY), NPER) %>% as.integer(), 
+		   COL = rep(rep(rep(seq(1, NC, 1), NR), NLAY), NPER) %>% as.integer(),
 		   GWE = GWE %>% as.numeric()
 	       )
     rm(TRANS)

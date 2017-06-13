@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output:
     github_document
 ---
-The MFtools library is used for investigating the input and output ffiles from MODFLOW simulations. 
+The MFtools library is used for investigating the input and output files from MODFLOW simulations. 
 The library is based on fixed-width file formats as are generated when using Groundwater Vistas. 
 This library has been tested using Groundwater Vistas files. The library includes functions for the following
 tasks:

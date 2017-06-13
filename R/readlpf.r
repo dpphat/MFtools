@@ -111,7 +111,7 @@
 
 
 readlpf <- function(rootname){
-    infl <- paste(rootname, ".lpf", sep = "")
+    infl <- paste0(rootname, ".lpf")
     d <- readdis(rootname)           
     linin <- read_lines(infl)
     indx <- max(grep("#", linin)) + 1

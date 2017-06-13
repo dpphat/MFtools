@@ -48,9 +48,10 @@
 
 
 readdis <- function(rootname){
-    infl <- paste(rootname, ".dis", sep = "")
-    linin <- read_lines(infl)
-    indx <- max(grep("#", linin)) + 1                       
+    infl <- paste0(rootname, ".dis")
+    linin <- read_lines(infl) %>% .[-grep("#", .)]              # READ IN DIS FILE BUT REMOVE COMMENTED LINES
+                                                                # THIS IS IN PREPARATION FOR MODFLOW 6
+    indx <- 1
     NLAY <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[1]] %>% as.integer()
     NROW <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[2]] %>% as.integer()
     NCOL <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[3]] %>% as.integer()
