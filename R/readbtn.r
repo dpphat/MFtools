@@ -122,8 +122,7 @@ readbtn <- function(rootname){
     LAYCON <- linin[indx + seq(1:BLOCKEND) - 1] %>% 
               parse_MF_FW_LINE() %>% 
               as.integer()
-
-    # indx <- indx + BLOCKEND  
+ 
     HDGLOC       <- grep("\\(", linin)
     HDG          <- linin[HDGLOC]
     UNI          <- substr(HDG, start = 1, stop = 10) %>% as.integer()
@@ -207,6 +206,8 @@ if(length(MULTLOC[MULTLOC > 3]) > 0){
                       LAY = rep(1:NLAY, each = NCOL * NROW),
                       ROW = rep(rep(1:NROW, each = NCOL), NLAY), 
                       COL = rep(rep(seq(1, NCOL, 1), NROW), NLAY), 
+                      X   = rep(rep(X, NROW), NLAY), 
+                      Y   = rep(rep(Y, each = NCOL), NLAY), 
                       dZ = dZ, 
                       PRSITY = PRSITY, 
                       ICBUND = ICBUND) %>%    

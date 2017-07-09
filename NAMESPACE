@@ -2,6 +2,9 @@
 
 export(disp)
 export(masscalc)
+export(parse_MF_CELL_INDX)
+export(parse_MF_FW_ELMT)
+export(parse_MF_FW_LINE)
 export(readbtn)
 export(readdis)
 export(readhds)
