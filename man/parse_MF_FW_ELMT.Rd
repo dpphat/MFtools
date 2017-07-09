@@ -16,3 +16,12 @@ from the MODFLOW fixed width file}
 This function is used for extracting individual elements of a single line from a fixed width MODFLOW file
 It is being used as a utility function for the other MFtools functions
 }
+\examples{
+infl <- paste0(rootname, ".dis")
+linin <- read_lines(infl) \%>\% .[-grep("#", .)]              # READ IN DIS FILE BUT REMOVE COMMENTED LINES
+                                                            # THIS IS IN PREPARATION FOR MODFLOW 6
+indx <- 1
+NLAY <- linin[indx] \%>\% parse_MF_FW_ELMT(1) \%>\% as.integer()
+NLAY
+[1] 15
+}

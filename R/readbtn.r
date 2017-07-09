@@ -214,7 +214,9 @@ if(length(MULTLOC[MULTLOC > 3]) > 0){
                       bind_cols(SCONC) %>%
                       select(LAY, 
                              ROW, 
-                             COL, 
+                             COL,
+                             X, 
+                             Y,                              
                              dZ, 
                              PRSITY, 
                              ICBUND, 

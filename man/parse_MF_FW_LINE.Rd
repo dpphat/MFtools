@@ -14,3 +14,6 @@ from the MODFLOW fixed width file}
 This function is used for extracting all of the elements of a single line from a fixed width MODFLOW file
 It is being used as a utility function for the other MFtools functions
 }
+\examples{
+dY <- linin[indx + seq(1:BLOCKEND) - 1] \%>\% parse_MF_FW_LINE()
+}

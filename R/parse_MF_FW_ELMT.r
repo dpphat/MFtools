@@ -7,7 +7,7 @@
 #' @param ELEMENT this is the integer number of the element the user wishes to select
 #' from the MODFLOW fixed width file
 #' @export
-#' @exmaples
+#' @examples
 #' infl <- paste0(rootname, ".dis")
 #' linin <- read_lines(infl) %>% .[-grep("#", .)]              # READ IN DIS FILE BUT REMOVE COMMENTED LINES
 #'                                                             # THIS IS IN PREPARATION FOR MODFLOW 6

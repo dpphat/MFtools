@@ -6,7 +6,7 @@
 #' @param LINE this is the individual fixed width MODFLOW file line
 #' from the MODFLOW fixed width file
 #' @export
-#' @exmaples
+#' @examples
 #' CELL_INDX    <- Map(seq, BLOCK_START, BLOCK_END)
 #' VAL <- CELL_INDX %>% parse_MF_CELL_INDX(LINE = linin)
 

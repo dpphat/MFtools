@@ -6,7 +6,7 @@
 #' @param LINE this is the individual fixed width MODFLOW file line
 #' from the MODFLOW fixed width file
 #' @export
-#' @exmaples
+#' @examples
 #' dY <- linin[indx + seq(1:BLOCKEND) - 1] %>% parse_MF_FW_LINE()
 
 parse_MF_FW_LINE <- function(LINE = inline){
