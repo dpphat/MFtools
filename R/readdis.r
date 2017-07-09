@@ -52,12 +52,12 @@ readdis <- function(rootname){
     linin <- read_lines(infl) %>% .[-grep("#", .)]              # READ IN DIS FILE BUT REMOVE COMMENTED LINES
                                                                 # THIS IS IN PREPARATION FOR MODFLOW 6
     indx <- 1
-    NLAY <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[1]] %>% as.integer()
-    NROW <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[2]] %>% as.integer()
-    NCOL <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[3]] %>% as.integer()
-    NPER <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[4]] %>% as.integer()
-    ITMUNI <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[5]] %>% as.integer()
-    LENUNI <- linin[indx] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[[6]] %>% as.integer()
+    NLAY <- linin[indx] %>% parse_MF_FW_ELMT(1) %>% as.integer()
+    NROW <- linin[indx] %>% parse_MF_FW_ELMT(2) %>% as.integer()
+    NCOL <- linin[indx] %>% parse_MF_FW_ELMT(3) %>% as.integer()
+    NPER <- linin[indx] %>% parse_MF_FW_ELMT(4) %>% as.integer()
+    ITMUNI <- linin[indx] %>% parse_MF_FW_ELMT(5) %>% as.integer()
+    LENUNI <- linin[indx] %>% parse_MF_FW_ELMT(6) %>% as.integer()
 
     HDGLOC       <- grep("\\(", linin)
     HDG          <- linin[HDGLOC]
@@ -79,28 +79,20 @@ readdis <- function(rootname){
     indx <- indx + 1
     BLOCKSIZE <- NROW * NCOL
     BLOCKEND <- ceiling(NLAY / 50)
-    LAYCBD <- linin[indx + seq(1:BLOCKEND) - 1] %>% 
-              stringr::str_split("\\s+") %>% 
-              unlist() %>% 
-              subset(. != "") %>% 
+    LAYCBD <- linin[indx + seq(1:BLOCKEND) - 1] %>% parse_MF_FW_LINE() %>% 
               as.integer()
 
 # COLUMN WIDTHS
 #---------------------------------------------------------    
     indx <- HDGLOC[1]
     dX <- vector(mode = "numeric", length = NCOL) 
-    X <- vector(mode = "numeric", length = NCOL)      
-    UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-    MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
-    FRMT <- substr(linin[indx], start = 21, stop = 30)
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
-    BLOCKEND <- (ceiling(NCOL / FRMTREP))
+    X <- vector(mode = "numeric", length = NCOL)
+    BLOCKEND <- (ceiling(NCOL / FRMTREP[1]))
     indx <- indx + 1
-    if(UNI == 0){
-    dX <- rep(MULT, NCOL)
+    if(UNI[1] == 0){
+    dX <- rep(MULT[1], NCOL)
     }else{  
-        dX <- linin[indx + seq(1:BLOCKEND) - 1] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
+        dX <- linin[indx + seq(1:BLOCKEND) - 1] %>% parse_MF_FW_LINE()
         }
     dX %<>% as.numeric()  
     X <- c(dX[1] / 2., dX[1:(NCOL - 1)] / 2 + dX[2:NCOL] / 2) %>% cumsum()
@@ -109,19 +101,12 @@ readdis <- function(rootname){
     indx <- HDGLOC[2]
     dY <- vector(mode = "numeric", length = NROW) 
     Y <- vector(mode = "numeric", length = NROW)  
-    UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-    MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
-    FRMT <- substr(linin[indx], start = 21, stop = 30)
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
-    BLOCKEND <- (ceiling(NROW / FRMTREP))  
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]    
+    BLOCKEND <- (ceiling(NROW / FRMTREP[2]))  
     indx <- indx + 1
-    if(UNI == 0){
-    dY <- rep(MULT, NROW)
+    if(UNI[2] == 0){
+    dY <- rep(MULT[2], NROW)
     }else{ 
-        dY <- linin[indx + seq(1:BLOCKEND) - 1] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
+        dY <- linin[indx + seq(1:BLOCKEND) - 1] %>% parse_MF_FW_LINE()
         }
     dY %<>% as.numeric()    
     Y <- sum(dY) - (c(dY[1] / 2., dY[1:(NROW - 1)] / 2. + dY[2:NROW] / 2.) %>% cumsum())
@@ -129,17 +114,12 @@ readdis <- function(rootname){
 #-----------------------------------------------------------
     indx <- HDGLOC[3]
     TOPin <- vector(mode = "numeric", length = BLOCKSIZE) 
-    UNI <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-    MULT <- substr(linin[indx], start = 11, stop = 20) %>% as.numeric()
-    FRMT <- substr(linin[indx], start = 21, stop = 30)
-    FRMTREP <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[1]]
-    FRMTWIDTH <- as.numeric(regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT))[[1]])[[2]]
-    BLOCKEND <- (NROW * ceiling(NCOL / FRMTREP))  
+    BLOCKEND <- (NROW * ceiling(NCOL / FRMTREP[3]))  
     indx <- indx + 1
-    if(UNI == 0){
-        TOPin <- rep(MULT, BLOCKSIZE)
+    if(UNI[3] == 0){
+        TOPin <- rep(MULT[3], BLOCKSIZE)
     }else{     
-        TOPin <- linin[indx + seq(1:BLOCKEND) - 1] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
+        TOPin <- linin[indx + seq(1:BLOCKEND) - 1] %>% parse_MF_FW_LINE()
     } 
     TOPin %<>% as.numeric()    
         
@@ -156,7 +136,7 @@ readdis <- function(rootname){
     #BOTin <- vector(mode = "numeric", length = NLAY * BLOCKSIZE)    
 
     VAL <- vector(mode = "numeric", length = NLAY * BLOCKSIZE)
-if(length(MULTLOC[MULTLOC > 3]) > 1){
+if(length(MULTLOC[MULTLOC > 3]) > 0){
     # SPECIFIED CELLS: CELL BOTTOM ELEVATIONS SPECIFED USING MULT
     # SPEC_CELLS ARE THE CELLS THAT ARE DEFINED WHEN UNIT == 0
     SPEC_CELLS <- rep(BLOCKSIZE * (MULTLOC[MULTLOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
@@ -164,20 +144,9 @@ if(length(MULTLOC[MULTLOC > 3]) > 1){
     ARR_LOC    <- grep("^1$", ARR_MULT)
     ARR_CELL   <- rep(BLOCKSIZE * (ARR_LOC[ARR_LOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
     VAL[SPEC_CELLS] <- rep(MULT[MULTLOC[MULTLOC > 3]], each = BLOCKSIZE)
-    VAL[ARR_CELL] <- CELL_INDX[4:length(CELL_INDX)] %>% 
-                     unlist() %>% 
-                     .[. > 0] %>% 
-                     linin[.] %>% 
-                     stringr::str_split("\\s+") %>% 
-                     unlist() %>% 
-                     subset(. != "")
+    VAL[ARR_CELL] <- CELL_INDX %>% parse_MF_CELL_INDX(LINE = linin)
     }else{
-    VAL <- CELL_INDX[4:length(CELL_INDX)] %>% 
-           unlist() %>% 
-           linin[.] %>% 
-           stringr::str_split("\\s+") %>% 
-           unlist() %>% 
-           subset(. != "")
+    VAL <- CELL_INDX %>% parse_MF_CELL_INDX(LINE = linin)
     }
     
     VAL %<>% as.numeric()    
@@ -189,17 +158,19 @@ if(length(MULTLOC[MULTLOC > 3]) > 1){
                       Y   = rep(rep(Y, each = NCOL), NLAY), 
                       BOT = VAL) 
     rm(VAL)  
-    indx <- max(BLOCK_END) + 1
+    indx <- HDGLOC[length(HDGLOC)] + 
+            ifelse(UNI[length(UNI)] >= 1, 1, 0) * 
+            BLOCK_LENGTH[length(BLOCK_LENGTH)] + 1
 #
 #----------------------------------------------------------------    
     PERLEN <- vector(mode = "numeric", length = NPER)
     NSTP <- vector(mode = "integer", length = NPER)
     TSMULT <- vector(mode = "numeric", length = NPER)
     SS <- vector(mode = "character", length = NPER)
-    PERLEN <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[seq(1, 4 * NPER, 4)] %>% as.numeric()
-    NSTP   <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[seq(2, 4 * NPER, 4)] %>% as.integer()    
-    TSMULT <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[seq(3, 4 * NPER, 4)] %>% as.numeric()
-    SS     <- linin[indx:(indx + NPER - 1)] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "") %>% .[seq(4, 4 * NPER, 4)] %>% as.character()                 
+    PERLEN <- linin[indx:(indx + NPER - 1)] %>% parse_MF_FW_ELMT(1) %>% as.numeric()
+    NSTP   <- linin[indx:(indx + NPER - 1)] %>% parse_MF_FW_ELMT(2) %>% as.integer()    
+    TSMULT <- linin[indx:(indx + NPER - 1)] %>% parse_MF_FW_ELMT(3) %>% as.numeric()
+    SS     <- linin[indx:(indx + NPER - 1)] %>% parse_MF_FW_ELMT(4) %>% as.character()                 
     DIS <- list(NLAY = NLAY,
                 NCOL = NCOL, 
                 NROW = NROW, 

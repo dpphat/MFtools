@@ -104,31 +104,26 @@ readbtn <- function(rootname){
     infl <- paste(rootname, ".btn", sep = "")
     linin <- read_lines(infl)
     indx <- 3                      
-    NLAY <- substr(linin[indx], start = 1, stop = 10) %>% as.integer()
-    NROW <- substr(linin[indx], start = 11, stop = 20) %>% as.integer()
-    NCOL <- substr(linin[indx], start = 21, stop = 30) %>% as.integer()
-    NPER <- substr(linin[indx], start = 31, stop = 40) %>% as.integer()
-    NCOMP <- substr(linin[indx], start = 41, stop = 50) %>% as.integer()
-    MCOMP <- substr(linin[indx], start = 51, stop = 60) %>% as.integer()
+    NLAY <- linin[indx] %>% parse_MF_FW_ELMT(1) %>% as.integer()
+    NROW <- linin[indx] %>% parse_MF_FW_ELMT(2) %>% as.integer()
+    NCOL <- linin[indx] %>% parse_MF_FW_ELMT(3) %>% as.integer()
+    NPER <- linin[indx] %>% parse_MF_FW_ELMT(4) %>% as.integer()
+    NCOMP <- linin[indx] %>% parse_MF_FW_ELMT(5) %>% as.integer()
+    MCOMP <- linin[indx] %>% parse_MF_FW_ELMT(6) %>% as.integer()
     indx <- indx + 1    
     BLOCKSIZE <- NROW * NCOL
-    TUNIT <- substr(linin[indx], start = 1, stop = 4) %>% gsub("[[:space:]]", "", .)
-    LUNIT <- substr(linin[indx], start = 5, stop = 8) %>% gsub("[[:space:]]", "", .)
-    MUNIT <- substr(linin[indx], start = 9, stop = 12) %>% gsub("[[:space:]]", "", .)    
+    TUNIT <- linin[indx] %>% parse_MF_FW_ELMT(1) %>% as.character()
+    LUNIT <- linin[indx] %>% parse_MF_FW_ELMT(2) %>% as.character()
+    MUNIT <- linin[indx] %>% parse_MF_FW_ELMT(3) %>% as.character()
     indx <- indx + 1
-    TRNOP <- substring(linin[indx], 
-                       seq(1,nchar(linin[indx]),2), 
-                       seq(2,nchar(linin[indx]),2)) %>% 
-                       gsub("[[:space:]]", "", .)
+    TRNOP <- linin[indx] %>% parse_MF_FW_LINE()
     indx <- indx + 1
     BLOCKEND <- ceiling(NLAY / 40)
     LAYCON <- linin[indx + seq(1:BLOCKEND) - 1] %>% 
-              strsplit("\\s+") %>% 
-              unlist() %>% 
-              subset(. != "") %>% 
+              parse_MF_FW_LINE() %>% 
               as.integer()
 
-    indx <- indx + BLOCKEND  
+    # indx <- indx + BLOCKEND  
     HDGLOC       <- grep("\\(", linin)
     HDG          <- linin[HDGLOC]
     UNI          <- substr(HDG, start = 1, stop = 10) %>% as.integer()
@@ -147,28 +142,33 @@ readbtn <- function(rootname){
     CELL_INDX    <- Map(seq, BLOCK_START, BLOCK_END)
 # COLUMN WIDTHS
 #---------------------------------------------------------    
+    indx <- HDGLOC[1] + 1
+    BLOCKEND <- (ceiling(NCOL / FRMTREP[1]))
     if(UNI[1] == 0){
     dX <- rep(MULT[1], NCOL)
     }else{  
-        dX <- linin[CELL_INDX[[1]]] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
+        dX <- linin[indx + seq(1:BLOCKEND) - 1] %>% parse_MF_FW_LINE()
         }
     dX %<>% as.numeric()  
     X <- c(dX[1] / 2., dX[1:(NCOL - 1)] / 2 + dX[2:NCOL] / 2) %>% cumsum()
 # ROW WIDTHS
 #----------------------------------------------------------    
+    indx <- HDGLOC[2] + 1
+    BLOCKEND <- (ceiling(NROW / FRMTREP[2]))
     if(UNI[2] == 0){
     dY <- rep(MULT[2], NROW)
     }else{ 
-        dY <- linin[CELL_INDX[[2]]] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
+        dY <- linin[CELL_INDX[[2]]] %>% parse_MF_FW_LINE()
         }
     dY %<>% as.numeric()    
     Y <- sum(dY) - (c(dY[1] / 2., dY[1:(NROW - 1)] / 2. + dY[2:NROW] / 2.) %>% cumsum())
 # TOP ELEVATION
 #-----------------------------------------------------------
+    indx <- HDGLOC[3]
     if(UNI[3] == 0){
         TOPin <- rep(MULT[3], BLOCKSIZE)
     }else{     
-        TOPin <- linin[CELL_INDX[[3]]] %>% stringr::str_split("\\s+") %>% unlist() %>% subset(. != "")
+        TOPin <- linin[CELL_INDX[[3]]] %>% parse_MF_FW_LINE()
     } 
     TOPin %<>% as.numeric()    
         
@@ -178,8 +178,9 @@ readbtn <- function(rootname){
     rm(TOPin)
 # ASSIGN REMAINING PARAMETERS
 #--------------------------------------------------------------      
+indx <- HDGLOC[4] +1
 VAL <- c()
-if(length(MULTLOC[MULTLOC > 3]) > 1){
+if(length(MULTLOC[MULTLOC > 3]) > 0){
     # SPECIFIED CELLS: CELL BOTTOM ELEVATIONS SPECIFED USING MULT
     # SPEC_CELLS ARE THE CELLS THAT ARE DEFINED WHEN UNIT == 0
     SPEC_CELLS <- rep(BLOCKSIZE * (MULTLOC[MULTLOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
@@ -187,22 +188,11 @@ if(length(MULTLOC[MULTLOC > 3]) > 1){
     ARR_LOC    <- grep("^1$", ARR_MULT)
     ARR_CELL   <- rep(BLOCKSIZE * (ARR_LOC[ARR_LOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
     VAL[SPEC_CELLS] <- rep(MULT[MULTLOC[MULTLOC > 3]], each = BLOCKSIZE)
-    VAL[ARR_CELL] <- CELL_INDX[4:length(CELL_INDX)] %>% 
-                     unlist() %>% 
-                     .[. > 0] %>% 
-                     linin[.] %>% 
-                     stringr::str_split("\\s+") %>% 
-                     unlist() %>% 
-                     subset(. != "")
+    VAL[ARR_CELL] <- CELL_INDX %>% parse_MF_CELL_INDX(LINE = linin)
     }else{
-    VAL <- CELL_INDX[4:length(CELL_INDX)] %>% 
-           unlist() %>% 
-           linin[.] %>% 
-           stringr::str_split("\\s+") %>% 
-           unlist() %>% 
-           subset(. != "")
+    VAL <- CELL_INDX %>% parse_MF_CELL_INDX(LINE = linin)
     }
-
+    
     dZ     <- VAL[1:(NLAY * BLOCKSIZE)] %>% 
               as.numeric()
     PRSITY <- VAL[(NLAY * BLOCKSIZE + 1):(2 * NLAY * BLOCKSIZE)] %>% 
@@ -232,42 +222,38 @@ if(length(MULTLOC[MULTLOC > 3]) > 1){
 rm(VAL)  
 # BACK ARRAYS
 #--------------------------------------------------------------
-indx <- max(max(BLOCK_END), max(HDGLOC)) + 1    
-    CINACT <- substring(linin[indx], 
-                        seq(1, nchar(linin[indx]), 10), 
-                        seq(2, nchar(linin[indx]), 10))[[1]] %>% 
-              gsub("[[:space:]]", "", .) %>% 
+    indx <- HDGLOC[length(HDGLOC)] + 
+            ifelse(UNI[length(UNI)] >= 1, 1, 0) * 
+            BLOCK_LENGTH[length(BLOCK_LENGTH)] + 1
+            
+    CINACT <- linin[indx] %>% parse_MF_FW_ELMT(1) %>% 
               as.numeric()
-    THKMIN <- substring(linin[indx], 
-                        seq(1, nchar(linin[indx]), 10), 
-                        seq(10, nchar(linin[indx]), 10))[[2]] %>% 
-              gsub("[[:space:]]", "", .) %>% 
-              as.numeric()   
+              
+    THKMIN <- linin[indx] %>% parse_MF_FW_ELMT(2) %>% 
+              as.numeric()  
+              
     indx <- indx + 1
-    IFMTCN <- substring(linin[indx], 1, 10) %>% 
-              gsub("[[:space:]]", "", .) %>% as.integer()
-    IFMTNP <- substring(linin[indx], 11, 20) %>% 
-              gsub("[[:space:]]", "", .) %>% as.integer()
-    IFMTRF <- substring(linin[indx], 21, 30) %>% 
-              gsub("[[:space:]]", "", .) %>% as.integer()  
-    IFMTDP <- substring(linin[indx], 31, 40) %>% 
-              gsub("[[:space:]]", "", .) %>% as.integer() 
-    SAVUCN <- substring(linin[indx], 41, 50) %>% 
-              gsub("[[:space:]]", "", .) 
-    UNKN <- substring(linin[indx], 51, 60) %>% 
-              gsub("[[:space:]]", "", .)
+    IFMTCN <- linin[indx] %>% parse_MF_FW_ELMT(1) %>% 
+              as.integer()
+    IFMTNP <- linin[indx] %>% parse_MF_FW_ELMT(2) %>% 
+              as.integer()
+    IFMTRF <- linin[indx] %>% parse_MF_FW_ELMT(3) %>% 
+              as.integer() 
+    IFMTDP <- linin[indx] %>% parse_MF_FW_ELMT(4) %>% 
+              as.integer()
+    SAVUCN <- linin[indx] %>% parse_MF_FW_ELMT(5)
+    UNKN <- linin[indx] %>% parse_MF_FW_ELMT(6)
     indx <- indx + 1
 
 # UCN PRINTING FREQUENCY
 #-----------------------------------------------------------------    
-    NPRS <- linin[indx] %>% 
-              gsub("[[:space:]]", "", .) %>% 
-              as.integer()
+    NPRS <- linin[indx] %>% parse_MF_FW_LINE() %>% 
+            as.integer()
     indx <- indx + 1
-    TIMPRS <- vector(mode = "numeric", length = NPRS)
+    TIMPRS <- vector(mode = "numeric", length = abs(NPRS))
     FRMTREP <- 8
     FRMTWIDTH <- 10
-    BLOCKEND <- ceiling(NPRS / FRMTREP)
+    BLOCKEND <- ceiling(abs(NPRS) / FRMTREP)
     if(NPRS > 0){
     for(i in 1:BLOCKEND){
         FROM <- (i - 1) * FRMTREP + 1
@@ -282,15 +268,13 @@ indx <- max(max(BLOCK_END), max(HDGLOC)) + 1
     }
 #
 #-----------------------------------------------------------------
-    NOBS <- substring(linin[indx], 1, 10) %>% 
-              gsub("[[:space:]]", "", .) %>% 
-              as.integer()
+    NOBS <- linin[indx] %>% parse_MF_FW_ELMT(1) %>% 
+            as.integer()
     KOBS <- vector(mode = "integer", length = NOBS)
     IOBS <- vector(mode = "integer", length = NOBS)
     JOBS <- vector(mode = "integer", length = NOBS)    
-    NPROBS <- substring(linin[indx], 11, 20) %>% 
-              gsub("[[:space:]]", "", .) %>% 
-              as.integer()     
+    NPROBS <- linin[indx] %>% parse_MF_FW_ELMT(2) %>% 
+            as.integer()     
     indx <- indx + 1
     OBSLOC <- tibble::data_frame(
                         OBS_WELL = NA, 
@@ -319,10 +303,8 @@ indx <- max(max(BLOCK_END), max(HDGLOC)) + 1
     indx <- indx + NOBS       
     }                      
 
-    CHKMAS <- substring(linin[indx], 1, 10) %>% 
-              gsub("[[:space:]]", "", .)
-    NPRMAS <- substring(linin[indx], 11, 20) %>% 
-              gsub("[[:space:]]", "", .) %>% 
+    CHKMAS <- linin[indx] %>% parse_MF_FW_ELMT(1)
+    NPRMAS <- linin[indx] %>% parse_MF_FW_ELMT(2) %>% 
               as.integer()   
     indx <- indx + 1 
     PERLEN <- vector(mode = "numeric", length = NPER)
