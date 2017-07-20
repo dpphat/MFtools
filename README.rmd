@@ -15,12 +15,21 @@ tasks:
 * Reading the basic transport package file (readbtn(rootname))
 * Reading the headsave file (readhds(rootname, NLAY, NTTS))
 * Reading the unformatted concentration file (readucn(ucrootname, NLAY, NTTS))
+* Reading the well package file (readwel(rootname, NSP))
 * Reading no-flow array file (readnoflow(FILE, rootname))
+* Writing the headsave file (readhds(hds, ofl))
 * Writing the unformatted concentration file based on a concentration dataframe (writeucn(ucn, ofl))
 
-The library also includes a utility function for calculating contaminant mass based on information from the
-headsave file (i.e., saturated thickness), porosity read from the basic transport package,
- and concentrations from the unformatted concentration file (masscalc(BTN, HDS, UCN))
+The library also includes a set of utility functions for the following tasks:
+
+* Calculating contaminant mass based on information from the headsave file
+(i.e., saturated thickness), porosity read from the basic transport package,
+and concentrations from the unformatted concentration file (masscalc(BTN, HDS, UCN))
+* Reading a noflow matrix file (readnoflow(FILE, rootname))
+* Coordinate rotation for rotated models. This utility calculates X and Y coordinates from a data-frame (i.e., the BOT dataframe in the discretization file) based
+on a user-specified rotation and X and Y off-sets (rot(X_off,\ Y_off,\ ROT,\ Xin\ =\ X,\ Yin\ =\ Y))
+* Coordinate rotation from global coordinates to model coordinates (rot2mod(X_off,\ Y_off,\ ROT,\ Xin\ =\ X,\ Yin\ =\ Y))
+* Calculating longitudinal dispersivity based on the approach developed by Xu and Eckstein (1995) (disp(PLUME_L,\ UNITS\ =\ "feet"))
 
 The functions from the MFtools library use rootnames to read files. Rootnames
 are based on the MODFLOW rootname convention such that files consist of

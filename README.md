@@ -1,7 +1,7 @@
 MFtools README
 ================
 Dan Puddephatt
-2017-06-13
+2017-07-20
 
 The MFtools library is used for investigating the input and output files from MODFLOW simulations. The library is based on fixed-width file formats as are generated when using Groundwater Vistas. This library has been tested using Groundwater Vistas files. The library includes functions for the following tasks:
 
@@ -10,10 +10,18 @@ The MFtools library is used for investigating the input and output files from MO
 -   Reading the basic transport package file (readbtn(rootname))
 -   Reading the headsave file (readhds(rootname, NLAY, NTTS))
 -   Reading the unformatted concentration file (readucn(ucrootname, NLAY, NTTS))
+-   Reading the well package file (readwel(rootname, NSP))
 -   Reading no-flow array file (readnoflow(FILE, rootname))
+-   Writing the headsave file (readhds(hds, ofl))
 -   Writing the unformatted concentration file based on a concentration dataframe (writeucn(ucn, ofl))
 
-The library also includes a utility function for calculating contaminant mass based on information from the headsave file (i.e., saturated thickness), porosity read from the basic transport package, and concentrations from the unformatted concentration file (masscalc(BTN, HDS, UCN))
+The library also includes a set of utility functions for the following tasks:
+
+-   Calculating contaminant mass based on information from the headsave file (i.e., saturated thickness), porosity read from the basic transport package, and concentrations from the unformatted concentration file (masscalc(BTN, HDS, UCN))
+-   Reading a noflow matrix file (readnoflow(FILE, rootname))
+-   Coordinate rotation for rotated models. This utility calculates X and Y coordinates from a data-frame (i.e., the BOT dataframe in the discretization file) based on a user-specified rotation and X and Y off-sets (rot(X\_off, Y\_off, ROT, Xin = X, Yin = Y))
+-   Coordinate rotation from global coordinates to model coordinates (rot2mod(X\_off, Y\_off, ROT, Xin = X, Yin = Y))
+-   Calculating longitudinal dispersivity based on the approach developed by Xu and Eckstein (1995) (disp(PLUME\_L, UNITS = "feet"))
 
 The functions from the MFtools library use rootnames to read files. Rootnames are based on the MODFLOW rootname convention such that files consist of a rootname and an extension that describes the MODFLOW file.
 
@@ -134,19 +142,16 @@ d
     ## # ... with 313,190 more rows
     ## 
     ## $PERLEN
-    ##  [1] 364635 364635 364635 364635 364635 364635 364635 364635 364635 364635
-    ## [11] 364635 364635 364635 364635 364635 364635 364635 364635 364635    365
+    ## [1] 364635
     ## 
     ## $NSTP
-    ##  [1] 999 999 999 999 999 999 999 999 999 999 999 999 999 999 999 999 999
-    ## [18] 999 999   1
+    ## [1] 999
     ## 
     ## $TSMULT
-    ##  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+    ## [1] 1
     ## 
     ## $SS
-    ##  [1] "TR" "TR" "TR" "TR" "TR" "TR" "TR" "TR" "TR" "TR" "TR" "TR" "TR" "TR"
-    ## [15] "TR" "TR" "TR" "TR" "TR" "TR"
+    ## [1] "TR"
 
 The structure of the variable, d, is a list consisting of the information from the MODFLOW discretization file. For indexing purposes, some of the information is arranged in a dataframe, such as the TOP and BOT variables that describe the top and bottom elevations of each model layer.
 
@@ -289,7 +294,7 @@ p$PROPS %>% ggplot(aes(x = HK)) +
 
     ## Warning: Removed 4 rows containing missing values (geom_bar).
 
-![](README_files/figure-markdown_github/HISTO_K-1.png)
+![](README_files/figure-markdown_github-ascii_identifiers/HISTO_K-1.png)
 
 We can also investigate groundwater elevations by model layer
 
@@ -312,4 +317,4 @@ h %>% filter(GWE > 2000) %>% filter(GWE < 10000) %>%
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](README_files/figure-markdown_github/GWE-1.png)
+![](README_files/figure-markdown_github-ascii_identifiers/GWE-1.png)
