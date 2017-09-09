@@ -65,12 +65,15 @@
 #' 9      1     1   232    39  -2310.000         0
 #' 10     1     7   230    94  -9239.999         0
 #' # ... with 13,955 more rows
-readwel <- function(rootname, NSP = 1){
+readwel <- function(rootname = NA, NSP = 1){
+       if(is.na(rootname)){
+               rootname <- getroot()
+       }
        infl                   <- paste(rootname, ".wel", sep = "")
        fl                     <- read_file(infl) %>% gsub("\r", "", x = .) %>% strsplit("\n") %>% unlist()
-       INDX                   <- 1
-       TEXT                   <- fl[INDX]
-       INDX                   <- INDX + 1
+       TEXT                   <- fl[grep("#", fl)]
+       INDX                   <- ifelse(length(grep("#", fl)) == 0, 0, 
+                                        max(grep("#", fl), na.rm = TRUE)) + 1
        PARAMETER              <- NULL
        NPWEL                  <- NULL
        MXL                    <- NULL

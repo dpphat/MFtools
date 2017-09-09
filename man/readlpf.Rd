@@ -4,10 +4,10 @@
 \alias{readlpf}
 \title{Read MODFLOW .lpf File}
 \usage{
-readlpf(rootname)
+readlpf(rootname = NA)
 }
 \arguments{
-\item{rootname}{This is the root name of the dis file}
+\item{rootname}{This is the root name of the lpf file}
 }
 \description{
 This function reads in a lpf file and creates a list

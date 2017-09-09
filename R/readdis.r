@@ -47,7 +47,10 @@
 #' etc.
 
 
-readdis <- function(rootname){
+readdis <- function(rootname = NA){
+    if(is.na(rootname)){
+            rootname <- getroot()
+    }
     infl <- paste0(rootname, ".dis")
     linin <- read_lines(infl) %>% .[-grep("#", .)]              # READ IN DIS FILE BUT REMOVE COMMENTED LINES
                                                                 # THIS IS IN PREPARATION FOR MODFLOW 6

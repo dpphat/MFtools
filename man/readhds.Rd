@@ -4,7 +4,7 @@
 \alias{readhds}
 \title{Read MODFLOW .hds File}
 \usage{
-readhds(rootname, NLAY, NPER)
+readhds(rootname = NA, NLAY, NPER)
 }
 \arguments{
 \item{rootname}{This is the rootname of the flow model (i.e., "F95")}

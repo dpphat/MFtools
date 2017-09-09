@@ -4,7 +4,7 @@
 \alias{readwel}
 \title{Read MODFLOW .wel File}
 \usage{
-readwel(rootname, NSP = 1)
+readwel(rootname = NA, NSP = 1)
 }
 \arguments{
 \item{rootname}{This is the root name of the dis file}

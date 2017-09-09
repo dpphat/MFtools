@@ -21,7 +21,10 @@
 #' @examples
 #' readhds("F95", NLAY = 8, NTTS = 16)
 
-readhds <- function(rootname, NLAY, NPER){
+readhds <- function(rootname = NA, NLAY, NPER){
+    if(is.na(rootname)){
+            rootname <- getroot()
+    }
     # NLAY IS THE NUMBER OF LAYERS IN THE MODEL
 	# NPER IS THE NUMBER OF TRANSPORT TIME STEPS IN THE MODEL
     hdsname <- paste(rootname, ".hds", sep = "")	

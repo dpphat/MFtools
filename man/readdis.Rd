@@ -4,7 +4,7 @@
 \alias{readdis}
 \title{Read MODFLOW .dis File}
 \usage{
-readdis(rootname)
+readdis(rootname = NA)
 }
 \arguments{
 \item{rootname}{This is the root name of the dis file}

@@ -69,7 +69,7 @@
 #' end of the line, a zero value, or a non-numeric entry terminates the list of values.}
 #' \item{PROPS}{Data frame of LAY, ROW, COL, HK, HANI, VKA, Ss, Sy, VKCB, WETDRY}
 #' }
-#' @param rootname This is the root name of the dis file
+#' @param rootname This is the root name of the lpf file
 #' @export
 #' @examples
 #' readlpf("F95")
@@ -110,7 +110,10 @@
 # 8     8 20.0000000 20.000000 20.00000
 
 
-readlpf <- function(rootname){
+readlpf <- function(rootname = NA){
+    if(is.na(rootname)){
+            rootname <- getroot()
+    }
     infl <- paste0(rootname, ".lpf")
     d <- readdis(rootname)           
     linin <- read_lines(infl)
