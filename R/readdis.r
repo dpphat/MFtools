@@ -126,11 +126,11 @@ readdis <- function(rootname = NA){
     } 
     TOPin %<>% as.numeric()    
         
-    TOP <- tibble::data_frame(ROW = rep(1:NROW, each = NCOL), 
-                              COL = rep(seq(1, NCOL, 1), NROW),  
-                              X   = rep(X, NROW), 
-                              Y   = rep(Y, each = NCOL), 
-                              TOP = TOPin) 
+    TOP <- tibble::data_frame(ROW = rep(1:NROW, each = NCOL) %>% as.integer(), 
+                              COL = rep(seq(1, NCOL, 1), NROW) %>% as.integer(),  
+                              X   = rep(X, NROW) %>% as.numeric(), 
+                              Y   = rep(Y, each = NCOL) %>% as.numeric(), 
+                              TOP = TOPin %>% as.numeric()) 
     rm(TOPin)
     
 # BOTTOM ELEVATIONS
@@ -154,12 +154,12 @@ if(length(MULTLOC[MULTLOC > 3]) > 0){
     
     VAL %<>% as.numeric()    
     BOT <- tibble::data_frame(
-                      LAY = rep(1:NLAY, each = NCOL * NROW),
-                      ROW = rep(rep(1:NROW, each = NCOL), NLAY), 
-                      COL = rep(rep(seq(1, NCOL, 1), NROW), NLAY), 
-                      X   = rep(rep(X, NROW), NLAY), 
-                      Y   = rep(rep(Y, each = NCOL), NLAY), 
-                      BOT = VAL) 
+                      LAY = rep(1:NLAY, each = NCOL * NROW) %>% as.integer(),
+                      ROW = rep(rep(1:NROW, each = NCOL), NLAY) %>% as.integer(), 
+                      COL = rep(rep(seq(1, NCOL, 1), NROW), NLAY) %>% as.integer(), 
+                      X   = rep(rep(X, NROW), NLAY) %>% as.numeric(), 
+                      Y   = rep(rep(Y, each = NCOL), NLAY) %>% as.numeric(), 
+                      BOT = VAL %>% as.numeric()) 
     rm(VAL)  
     indx <- HDGLOC[length(HDGLOC)] + 
             ifelse(UNI[length(UNI)] >= 1, 1, 0) * 
