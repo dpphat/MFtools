@@ -10,7 +10,14 @@ read_nwt_lst <- function(LISTFL){
     linin <- read_lines(LISTFL) %>% .[-grep("#", .)]
     HDCHNG_LOC_STRT <- grep("Residual-Control", linin) 
     HDCHNG_LOC_END <- lead(HDCHNG_LOC_STRT) - 2
-    HDCHNG_LOC_END[length(HDCHNG_LOC_END)] <- grep("NWT REQUIRED", linin) - 3
+    
+    if(any(grepl("NWT REQUIRED", linin))){
+        HDCHNG_LOC_END[length(HDCHNG_LOC_END)] <- grep("NWT REQUIRED", linin) - 3
+    }else{
+        HDCHNG_LOC_STRT <- HDCHNG_LOC_STRT[1:(length(HDCHNG_LOC_STRT) - 1)]
+        HDCHNG_LOC_END  <- HDCHNG_LOC_END[1:length(HDCHNG_LOC_STRT)]
+        }
+        
     HDCHNG_LOCS <- purrr::map2(HDCHNG_LOC_STRT + 1, HDCHNG_LOC_END, ~seq(.x, .y)) %>% unlist()
     COL_NAMES <- linin[HDCHNG_LOCS[1] - 1] %>%
                     str_trim() %>% 
@@ -34,7 +41,7 @@ read_nwt_lst <- function(LISTFL){
                     as_tibble()
     colnames(HDCHNG) <- COL_NAMES
                     
-    out <- HDCHNG %>% mutate(`Residual-Control` = as.numeric(`Residual-Control`), 
+    out <- HDCHNG %>% mutate(`Residual-Control` = as.integer(`Residual-Control`), 
                              ITER = as.integer(ITER), 
                              INNER_ITER = as.integer(INNER_ITER), 
                              COL = as.integer(COL), 

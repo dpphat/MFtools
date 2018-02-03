@@ -46,7 +46,7 @@ slvrplt <- function(PATH = NA, HCLOSE = 0.001, slvUNIT = 19){
     }else if(slvr == "PCG"){
         HDCHNG <- read_pcg_lst(lstfl)
     }else if(slvr == "NWT"){
-        HDCHNG <- read_nwt_lst(lstfl)
+        HDCHNG <- tryCatch(read_nwt_lst(lstfl), error=function(e) print("Headchange has not been printed in .lst file yet"))
     }
     
     HDCHNG %>% write_csv(paste(rtPATH, "HDCHNG.csv", sep = "\\"))
