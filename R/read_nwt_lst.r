@@ -6,12 +6,12 @@
 #' @param LISTFL This is the full name (including filepath) of the .lst file.
 #' @export
 
-read_pcg_lst <- function(LISTFL){
+read_nwt_lst <- function(LISTFL){
     linin <- read_lines(LISTFL) %>% .[-grep("#", .)]
     HDCHNG_LOC_STRT <- grep("Residual-Control", linin) 
     HDCHNG_LOC_END <- lead(HDCHNG_LOC_STRT) - 2
     HDCHNG_LOC_END[length(HDCHNG_LOC_END)] <- grep("NWT REQUIRED", linin) - 3
-    HDCHNG_LOCS <- purrr::map2(HDCHNG_LOC + 1, HDCHNG_LOC_END, ~seq(.x, .y)) %>% unlist()
+    HDCHNG_LOCS <- purrr::map2(HDCHNG_LOC_STRT + 1, HDCHNG_LOC_END, ~seq(.x, .y)) %>% unlist()
     COL_NAMES <- linin[HDCHNG_LOCS[1] - 1] %>%
                     str_trim() %>% 
                     strsplit("\\s+") %>% 
