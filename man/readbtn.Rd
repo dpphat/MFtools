@@ -23,7 +23,7 @@ composed of the following vectors:
 \item{LUNIT}{Atomic Vector of the Number of Length Unit}
 \item{MUNIT}{Atomic Vector of the Number of Mass Unit} 
 \item{TRNOP}{Logical Vector of Packages To Use}
-\item{LAYCON}{Vector of Layer Types: LAYCON = 0 = Confined, LAYCON ≠ 0 = Unconfined or Convertible} 
+\item{LAYCON}{Vector of Layer Types: LAYCON = 0 = Confined, LAYCON != 0 = Unconfined or Convertible} 
 \item{dX}{Cell Width Along Columns} 
 \item{X}{Cell Center Coordinate in the Model Coordinate System} 
 \item{dY}{Cell Width Along Rows}

@@ -23,57 +23,57 @@
 
 readhds <- function(rootname = NA, NLAY, NPER){
     if(is.na(rootname)){
-            rootname <- getroot()
+            rootname <- MFtools::getroot()
     }
     # NLAY IS THE NUMBER OF LAYERS IN THE MODEL
-	# NPER IS THE NUMBER OF TRANSPORT TIME STEPS IN THE MODEL
-    hdsname <- paste(rootname, ".hds", sep = "")	
-	to.read <- file(hdsname, "rb")	
-	TRANS <- c()
-	STP <- c()
-	PERLEN <- c()
-	TIME <- c()
-	TEXT <- c()
-	LAY <- c()
-	GWE <- c()
-	dat <- c()
+    # NPER IS THE NUMBER OF TRANSPORT TIME STEPS IN THE MODEL
+    hdsname <- paste(rootname, ".hds", sep = "")    
+    to.read <- file(hdsname, "rb")    
+    TRANS <- c()
+    STP <- c()
+    PERLEN <- c()
+    TIME <- c()
+    TEXT <- c()
+    LAY <- c()
+    GWE <- c()
+    dat <- c()
     readblock <- function(){
-	      TRANS <- readBin(to.read, integer(), n = 1)	
-	      STP <- readBin(to.read, integer(), n = 1)
-	      PERLEN <- readBin(to.read, double(), size = 4, n = 1)
-	      TIME <- readBin(to.read, double(), size = 4, n = 1)
-	      TEXT <- readChar(to.read, 16)
-	      NC <- readBin(to.read, integer(), n = 1)
-	      NR <- readBin(to.read, integer(), n = 1)
-	      LAY <- readBin(to.read, integer(), n = 1)
-	      GWE = readBin(to.read, double(), size = 4, n = NR * NC, endian = "little")
-	out <- list(TRANS, STP, PERLEN, TIME, TEXT, NC, NR, LAY, GWE)
-	return(out)			
-    }	
-	for(Q in 1:NPER){
-	    for(K in 1:NLAY){
-		    dat[[length(dat) + 1]] <- readblock()
-		}
-	}	
-	close(to.read)
-	TRANS  <- sapply(dat, "[[", 1)
-	STP    <- sapply(dat, "[[", 2)
-	PERLEN <- sapply(dat, "[[", 3)
-	TIME   <- sapply(dat, "[[", 4)
-	LAY    <- sapply(dat, "[[", 8)
-	NC     <- dat[[1]][6] %>% as.integer
-	NR     <- dat[[1]][7] %>% as.integer
-	GWE    <- sapply(dat, "[[", 9)
-	HDS    <- tibble::data_frame(
-	       TRANS = rep(TRANS, each = (NC * NR)) %>% as.integer(),
-		   STP = rep(STP, each = (NC * NR)) %>% as.integer(),
-		   PERLEN = rep(PERLEN, each = (NC * NR)) %>% as.numeric(), 
-		   TIME = rep(TIME, each = (NC * NR)) %>% as.numeric(), 
-		   LAY = rep(LAY, each = (NC * NR)) %>% as.integer(),
-		   ROW = rep(rep(rep(1:NR, each = NC), NLAY), NPER) %>% as.integer(), 
-		   COL = rep(rep(rep(seq(1, NC, 1), NR), NLAY), NPER) %>% as.integer(),
-		   GWE = GWE %>% as.numeric()
-	       )
+          TRANS <- readBin(to.read, integer(), n = 1)    
+          STP <- readBin(to.read, integer(), n = 1)
+          PERLEN <- readBin(to.read, double(), size = 4, n = 1)
+          TIME <- readBin(to.read, double(), size = 4, n = 1)
+          TEXT <- readChar(to.read, 16)
+          NC <- readBin(to.read, integer(), n = 1)
+          NR <- readBin(to.read, integer(), n = 1)
+          LAY <- readBin(to.read, integer(), n = 1)
+          GWE = readBin(to.read, double(), size = 4, n = NR * NC, endian = "little")
+    out <- list(TRANS, STP, PERLEN, TIME, TEXT, NC, NR, LAY, GWE)
+    return(out)            
+    }    
+    for(Q in 1:NPER){
+        for(K in 1:NLAY){
+            dat[[length(dat) + 1]] <- readblock()
+        }
+    }    
+    close(to.read)
+    TRANS  <- sapply(dat, "[[", 1)
+    STP    <- sapply(dat, "[[", 2)
+    PERLEN <- sapply(dat, "[[", 3)
+    TIME   <- sapply(dat, "[[", 4)
+    LAY    <- sapply(dat, "[[", 8)
+    NC     <- dat[[1]][6] %>% as.integer
+    NR     <- dat[[1]][7] %>% as.integer
+    GWE    <- sapply(dat, "[[", 9)
+    HDS    <- tibble::data_frame(
+                      TRANS = rep(TRANS, each = (NC * NR)) %>% as.integer(),
+                      STP = rep(STP, each = (NC * NR)) %>% as.integer(),
+                      PERLEN = rep(PERLEN, each = (NC * NR)) %>% as.numeric(), 
+                      TIME = rep(TIME, each = (NC * NR)) %>% as.numeric(), 
+                      LAY = rep(LAY, each = (NC * NR)) %>% as.integer(),
+                      ROW = rep(rep(rep(1:NR, each = NC), NLAY), NPER) %>% as.integer(), 
+                      COL = rep(rep(rep(seq(1, NC, 1), NR), NLAY), NPER) %>% as.integer(),
+                      GWE = GWE %>% as.numeric()
+           )
     rm(TRANS)
     rm(STP)
     rm(PERLEN)
@@ -82,8 +82,8 @@ readhds <- function(rootname = NA, NLAY, NPER){
     rm(NC)
     rm(NR)
     rm(LAY)
-    rm(GWE)	
-	gc()
-    return(HDS)		
+    rm(GWE)    
+    gc()
+    return(HDS)        
     }
-	
+    

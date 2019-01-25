@@ -131,32 +131,32 @@ masscalc <- function(BTN, HDS, UCN){
     TIMPRS_YEARS <- b$TIMPRS * to_yrs
     rm(b)     
     gc()
-    h <- readhds(HDS, NLAY, NSP) %>%
-         mutate(YEARS = TIME * to_yrs) 
+    h <- MFtools::readhds(HDS, NLAY, NSP) %>%
+         dplyr::mutate(YEARS = TIME * to_yrs) 
     
     h$GWE[h$GWE == 999] <- -10^6                        # Index and filter this way to improve speed
     
-    h %<>% mutate(THICK = ifelse(LAY == 1, GWE - BOTL1, dZ$dZ)) %>%    
-           mutate(THICK = ifelse(THICK < 0, 0, THICK))
+    h %<>% dplyr::mutate(THICK = ifelse(LAY == 1, GWE - BOTL1, dZ$dZ)) %>%    
+           dplyr::mutate(THICK = ifelse(THICK < 0, 0, THICK))
            
-    FLWYRS <- h %>% group_by(YEARS) %>% summarise(TIME = mean(YEARS)) %>% select(YEARS)
-    h %<>% select(STP, LAY, ROW, COL, THICK) %>% rename(PER = STP)
+    FLWYRS <- h %>% dplyr::group_by(YEARS) %>% dplyr::summarise(TIME = mean(YEARS)) %>% dplyr::select(YEARS)
+    h %<>% dplyr::select(STP, LAY, ROW, COL, THICK) %>% dplyr::rename(PER = STP)
           
-    TRANSYRS <- TIMPRS_YEARS %>% data_frame(YEARS = .)
-    NTTS <- full_join(FLWYRS, TRANSYRS, by = "YEARS") %>% nrow() %>% as.integer()
+    TRANSYRS <- TIMPRS_YEARS %>% tibble::data_frame(YEARS = .)
+    NTTS <- dplyr::full_join(FLWYRS, TRANSYRS, by = "YEARS") %>% nrow() %>% as.integer()
     dX <- dX %>% rep(NROW) %>% rep(NLAY) %>% rep(NTTS)
     dY <- dY %>% rep(each = NCOL) %>% rep(NLAY) %>% rep(NTTS)
     POR <- POR %>% rep(NTTS)
     
-    MASS <- readucn(UCN, NLAY, NTTS) %>%
-            mutate(YEARS = TIME * to_yrs) %>% 
-            left_join(h, by = c("PER", "LAY", "ROW", "COL")) %>%
-            mutate(dX = dX) %>%
-            mutate(dY = dY) %>%
-            mutate(POR = POR) %>%
-            mutate(CONC = ifelse(CONC < 0 , 0, CONC)) %>%
-            mutate(MASS = dX * dY * POR * THICK * CONC / from_L * to_lbs) %>%
-            select(YEARS, LAY, ROW, COL, THICK, CONC, MASS)         
+    MASS <- MFtools::readucn(UCN, NLAY, NTTS) %>%
+            dplyr::mutate(YEARS = TIME * to_yrs) %>% 
+            dplyr::left_join(h, by = c("PER", "LAY", "ROW", "COL")) %>%
+            dplyr::mutate(dX = dX) %>%
+            dplyr::mutate(dY = dY) %>%
+            dplyr::mutate(POR = POR) %>%
+            dplyr::mutate(CONC = ifelse(CONC < 0 , 0, CONC)) %>%
+            dplyr::mutate(MASS = dX * dY * POR * THICK * CONC / from_L * to_lbs) %>%
+            dplyr::select(YEARS, LAY, ROW, COL, THICK, CONC, MASS)         
             
     rm(h)
     rm(dX) 

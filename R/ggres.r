@@ -11,25 +11,25 @@ ggres <- function(PATH = NA){
     if(is.na(PATH)){
             PATH <- getwd()
         }
-    RES <- suppressWarnings(readpstres(PATH))
+    RES <- suppressWarnings(MFtools::readpstres(PATH))
     SD  <- sd(RES$`Weight*Residual`)
-    LBL <- RES %>% filter(abs(Residual) > SD)
+    LBL <- RES %>% dplyr::filter(abs(Residual) > SD)
     RANGE <- max(RES$Modelled, RES$Measured) - min(RES$Modelled, RES$Measured)
-    P <- RES %>% ggplot(aes(x = Measured)) +
-                 coord_fixed() +
-                 geom_abline(aes(intercept = 0, slope = 1), 
-                             size = 1) +
-                 geom_abline(aes(intercept = -SD, slope = 1), 
-                             lty = 4, size = 1, colour = "red") +
-                 geom_abline(aes(intercept = SD, slope = 1), 
-                             lty = 4, size = 1, colour = "red") +
-                 geom_point(aes(y = Modelled), 
-                            size = 2, 
-                            colour = "blue", 
-                            alpha = 0.5) + 
-                 geom_text(data = LBL, aes(label = Name, y = Modelled), 
-                           nudge_x = 0.025 * RANGE) + 
-                 labs(x = "Observed", y = "Simulated") + 
-                 theme_bw()
+    P <- RES %>% ggplot2::ggplot(aes(x = Measured)) +
+                 ggplot2::coord_fixed() +
+                 ggplot2::geom_abline(aes(intercept = 0, slope = 1), 
+                                      size = 1) +
+                 ggplot2::geom_abline(aes(intercept = -SD, slope = 1), 
+                                      lty = 4, size = 1, colour = "red") +
+                 ggplot2::geom_abline(aes(intercept = SD, slope = 1), 
+                                     lty = 4, size = 1, colour = "red") +
+                 ggplot2::geom_point(aes(y = Modelled), 
+                                     size = 2, 
+                                     colour = "blue", 
+                                     alpha = 0.5) + 
+                 ggplot2::geom_text_repel(data = LBL, aes(label = TARG_ID, y = Modelled), 
+                                    nudge_x = 0.025 * RANGE) + 
+                 ggplot2::labs(x = "Observed", y = "Simulated") + 
+                 ggplot2::theme_bw()
          print(P)
      }

@@ -9,7 +9,9 @@ readpstres <- function(PATH = NA){
     if(is.na(PATH)){
         PATH <- getwd()
     }
-    resfl <- list.files(PATH, ".res", full.names = TRUE)
-    out <- read_table(resfl) %>% suppressWarnings()
+    resfl <- list.files(PATH, "\\.res", full.names = TRUE)
+    out <- readr::read_table(resfl, col_types = readr::cols()) %>% 
+           dplyr::rename(PEST_ID = Name) %>%
+           dplyr::left_join(targid(PATH), by = "PEST_ID")
     return(out)
     }

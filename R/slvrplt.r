@@ -20,64 +20,64 @@ slvrplt <- function(PATH = NA, HCLOSE = 0.001, slvUNIT = 19){
         }
     MFIN_FILES <- c("mf2k.in", "mf2005.in", "mf6.in")
     infl <- list.files(rtPATH, full.names = TRUE)[list.files(rtPATH) %in% MFIN_FILES]
-    nmfl <- read_lines(infl) %>% paste(rtPATH, ., sep = "\\")
+    nmfl <- readr::read_lines(infl) %>% paste(rtPATH, ., sep = "\\")
     rnm  <- nmfl %>% 
-            str_split(".nam") %>% 
+            stringr::str_split(".nam") %>% 
             unlist() %>% 
             .[[1]]
             
     pckg <- read.table(nmfl, stringsAsFactors = FALSE) %>% 
-            as_tibble() %>%
-            rename(PACKAGE = V1, 
-                   UNIT = V2, 
-                   FILE = V3)
+            tibble::as_tibble() %>%
+            dplyr::rename(PACKAGE = V1, 
+                          UNIT = V2, 
+                          FILE = V3)
     
     slvr <- pckg %>%
-            filter(UNIT == slvUNIT) %>%
+            dplyr::filter(UNIT == slvUNIT) %>%
             .[[1]]
             
     lstfl <- pckg %>% 
-             filter(PACKAGE == "LIST") %>%
+             dplyr::filter(PACKAGE == "LIST") %>%
              .[[3]] %>%
              paste(rtPATH, ., sep = "\\")
 
     if(slvr == "GMG"){
-        HDCHNG <- read_gmg_lst(lstfl)
+        HDCHNG <- MFtools::read_gmg_lst(lstfl)
     }else if(slvr == "PCG"){
-        HDCHNG <- read_pcg_lst(lstfl)
+        HDCHNG <- MFtools::read_pcg_lst(lstfl)
     }else if(slvr == "NWT"){
-        HDCHNG <- tryCatch(read_nwt_lst(lstfl), error=function(e) print("Headchange has not been printed in .lst file yet"))
+        HDCHNG <- tryCatch(MFtools::read_nwt_lst(lstfl), error=function(e) print("Headchange has not been printed in .lst file yet"))
     }
     
-    HDCHNG %>% write_csv(paste(rtPATH, "HDCHNG.csv", sep = "\\"))
+    HDCHNG %>% readr::write_csv(paste(rtPATH, "HDCHNG.csv", sep = "\\"))
     print(HDCHNG)
     
-    PLOT <- HDCHNG %>% ggplot(aes(x = ITER, abs(HDCHNG))) +
-                       geom_point(shape = 21, 
-                                  size = 2, 
-                                  colour = "black", 
-                                  fill = "blue", 
-                                  alpha = 0.5) +
-                       geom_hline(yintercept = HCLOSE, 
-                                  size = 1, 
-                                  colour = "red", 
-                                  linetype = "dashed") +
-                       scale_y_log10(name = "Maximum Head-Change Value",
-                                     limits = c(HCLOSE / 10, NA), 
-                                     breaks = 10^(-10:10), 
-                                     labels = trans_format("log10", math_format(10^.x)), 
-                                     minor_breaks = c(1:9 %o% 10^(-10:10)), 
-                                     expand = c(0, 0)) +
-                       xlab("Iteration Number") +
-                       theme_bw()
+    PLOT <- HDCHNG %>% ggplot2::ggplot(ggplot2::aes(x = ITER, abs(HDCHNG))) +
+                       ggplot2::geom_point(shape = 21, 
+                                           size = 2, 
+                                           colour = "black", 
+                                           fill = "blue", 
+                                           alpha = 0.5) +
+                       ggplot2::geom_hline(yintercept = HCLOSE, 
+                                           size = 1, 
+                                           colour = "red", 
+                                           linetype = "dashed") +
+                       ggplot2::scale_y_log10(name = "Maximum Head-Change Value",
+                                           limits = c(HCLOSE / 10, NA), 
+                                           breaks = 10^(-10:10), 
+                                           labels = scales::trans_format("log10", scales::math_format(10^.x)), 
+                                           minor_breaks = c(1:9 %o% 10^(-10:10)), 
+                                           expand = c(0, 0)) +
+                       ggplot2::xlab("Iteration Number") +
+                       ggplot2::theme_bw()
     
     if(slvr == "PCG"){
-    PLOT <- PLOT + geom_point(data = HDCHNG %>% filter(INNER_OUTER == 1), 
-                              shape = 21, 
-                              size = 2, 
-                              colour = "black", 
-                              fill = "red", 
-                              alpha = 0.75)
+    PLOT <- PLOT + ggplot2::geom_point(data = HDCHNG %>% dplyr::filter(INNER_OUTER == 1), 
+                                       shape = 21, 
+                                       size = 2, 
+                                       colour = "black", 
+                                       fill = "red", 
+                                       alpha = 0.75)
     }
     print(PLOT)
 }

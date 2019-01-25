@@ -23,16 +23,16 @@
 
 get_dims <- function(rootname){
     infl <- paste0(rootname, ".dis")
-    linin <- read_lines(infl, n_max = 10) %>% .[-grep("#", .)]              # READ IN DIS FILE BUT REMOVE COMMENTED LINES
+    linin <- readr::read_lines(infl, n_max = 10) %>% .[-grep("#", .)]              # READ IN DIS FILE BUT REMOVE COMMENTED LINES
                                                                 # THIS IS IN PREPARATION FOR MODFLOW 6
     indx <- 1
-    NLAY <- linin[indx] %>% parse_MF_FW_ELMT(1) %>% as.integer()
-    NROW <- linin[indx] %>% parse_MF_FW_ELMT(2) %>% as.integer()
-    NCOL <- linin[indx] %>% parse_MF_FW_ELMT(3) %>% as.integer()
-    NPER <- linin[indx] %>% parse_MF_FW_ELMT(4) %>% as.integer()
-    DIMS <- data_frame(NLAY = NLAY, 
-                       NROW = NROW, 
-                       NCOL = NCOL, 
-                       NPER = NPER)
+    NLAY <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(1) %>% as.integer()
+    NROW <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(2) %>% as.integer()
+    NCOL <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(3) %>% as.integer()
+    NPER <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(4) %>% as.integer()
+    DIMS <- tibble::data_frame(NLAY = NLAY, 
+                               NROW = NROW, 
+                               NCOL = NCOL, 
+                               NPER = NPER)
     return(DIMS)
     }

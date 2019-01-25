@@ -34,11 +34,11 @@ rot <- function(df,
                 Xin = X, 
                 Yin = Y){
                 
-                Xin <- enquo(Xin)
-                Yin <- enquo(Yin)
+                Xin <- rlang::enquo(Xin)
+                Yin <- rlang::enquo(Yin)
                 RAD <- ROT * pi / 180
-                mutate(df, 
-                       Xout = (!!Xin) * cos(RAD) - (!!Yin) * sin(RAD) + X_off, 
-                       Yout = (!!Xin) * sin(RAD) + (!!Yin) * cos(RAD) + Y_off
+                dplyr::mutate(df, 
+                              Xout = (!!!Xin) * cos(RAD) - (!!!Yin) * sin(RAD) + X_off, 
+                              Yout = (!!!Xin) * sin(RAD) + (!!!Yin) * cos(RAD) + Y_off
                        )               
                 }

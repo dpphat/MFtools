@@ -24,11 +24,11 @@
 
 readnm <- function(rootname = NA){
     if(is.na(rootname)){
-        rootname <- getroot()
+        rootname <- MFtools::getroot()
     }
     nmfl <- paste0(rootname, ".nam")
     mf_fls <- read.table(nmfl, header = FALSE, stringsAsFactors = FALSE) %>% 
-              as_tibble() %>%
+              tibble::as_tibble() %>%
               dplyr::rename(PACKAGE = V1, 
                             UNIT = V2, 
                             FILE = V3)

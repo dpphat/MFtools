@@ -13,7 +13,7 @@
 #' \item{LUNIT}{Atomic Vector of the Number of Length Unit}
 #' \item{MUNIT}{Atomic Vector of the Number of Mass Unit} 
 #' \item{TRNOP}{Logical Vector of Packages To Use}
-#' \item{LAYCON}{Vector of Layer Types: LAYCON = 0 = Confined, LAYCON ≠ 0 = Unconfined or Convertible} 
+#' \item{LAYCON}{Vector of Layer Types: LAYCON = 0 = Confined, LAYCON != 0 = Unconfined or Convertible} 
 #' \item{dX}{Cell Width Along Columns} 
 #' \item{X}{Cell Center Coordinate in the Model Coordinate System} 
 #' \item{dY}{Cell Width Along Rows}
@@ -102,25 +102,25 @@
 
 readbtn <- function(rootname){
     infl <- paste(rootname, ".btn", sep = "")
-    linin <- read_lines(infl)
+    linin <- readr::read_lines(infl)
     indx <- 3                      
-    NLAY <- linin[indx] %>% parse_MF_FW_ELMT(1) %>% as.integer()
-    NROW <- linin[indx] %>% parse_MF_FW_ELMT(2) %>% as.integer()
-    NCOL <- linin[indx] %>% parse_MF_FW_ELMT(3) %>% as.integer()
-    NPER <- linin[indx] %>% parse_MF_FW_ELMT(4) %>% as.integer()
-    NCOMP <- linin[indx] %>% parse_MF_FW_ELMT(5) %>% as.integer()
-    MCOMP <- linin[indx] %>% parse_MF_FW_ELMT(6) %>% as.integer()
+    NLAY <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(1) %>% as.integer()
+    NROW <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(2) %>% as.integer()
+    NCOL <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(3) %>% as.integer()
+    NPER <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(4) %>% as.integer()
+    NCOMP <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(5) %>% as.integer()
+    MCOMP <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(6) %>% as.integer()
     indx <- indx + 1    
     BLOCKSIZE <- NROW * NCOL
-    TUNIT <- linin[indx] %>% parse_MF_FW_ELMT(1) %>% as.character()
-    LUNIT <- linin[indx] %>% parse_MF_FW_ELMT(2) %>% as.character()
-    MUNIT <- linin[indx] %>% parse_MF_FW_ELMT(3) %>% as.character()
+    TUNIT <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(1) %>% as.character()
+    LUNIT <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(2) %>% as.character()
+    MUNIT <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(3) %>% as.character()
     indx <- indx + 1
-    TRNOP <- linin[indx] %>% parse_MF_FW_LINE()
+    TRNOP <- linin[indx] %>% MFtools::parse_MF_FW_LINE()
     indx <- indx + 1
     BLOCKEND <- ceiling(NLAY / 40)
     LAYCON <- linin[indx + seq(1:BLOCKEND) - 1] %>% 
-              parse_MF_FW_LINE() %>% 
+              MFtools::parse_MF_FW_LINE() %>% 
               as.integer()
  
     HDGLOC       <- grep("\\(", linin)
@@ -133,7 +133,7 @@ readbtn <- function(rootname){
     FRMT         <- substr(HDG, start = 21, stop = 30)
     FRMTREP      <- regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT)) %>% lapply('[[', 1) %>% unlist() %>% as.integer()
     BLOCK_START  <- HDGLOC + 1
-    BLOCK_END    <- lead(BLOCK_START) - 2
+    BLOCK_END    <- dplyr::lead(BLOCK_START) - 2
     BLOCK_LENGTH <- (NROW * ceiling(NCOL / FRMTREP))
     BLOCK_END[length(BLOCK_END)] <- BLOCK_END[length(BLOCK_END) - 1] + BLOCK_LENGTH[length(BLOCK_END)] + 1
     BLOCK_START  <- BLOCK_START * ARR_MULT
@@ -144,9 +144,9 @@ readbtn <- function(rootname){
     indx <- HDGLOC[1] + 1
     BLOCKEND <- (ceiling(NCOL / FRMTREP[1]))
     if(UNI[1] == 0){
-    dX <- rep(MULT[1], NCOL)
+        dX <- rep(MULT[1], NCOL)
     }else{  
-        dX <- linin[indx + seq(1:BLOCKEND) - 1] %>% parse_MF_FW_LINE()
+        dX <- linin[indx + seq(1:BLOCKEND) - 1] %>% MFtools::parse_MF_FW_LINE()
         }
     dX %<>% as.numeric()  
     X <- c(dX[1] / 2., dX[1:(NCOL - 1)] / 2 + dX[2:NCOL] / 2) %>% cumsum()
@@ -167,7 +167,7 @@ readbtn <- function(rootname){
     if(UNI[3] == 0){
         TOPin <- rep(MULT[3], BLOCKSIZE)
     }else{     
-        TOPin <- linin[CELL_INDX[[3]]] %>% parse_MF_FW_LINE()
+        TOPin <- linin[CELL_INDX[[3]]] %>% MFtools::parse_MF_FW_LINE()
     } 
     TOPin %<>% as.numeric()    
         
@@ -187,9 +187,9 @@ if(length(MULTLOC[MULTLOC > 3]) > 0){
     ARR_LOC    <- grep("^1$", ARR_MULT)
     ARR_CELL   <- rep(BLOCKSIZE * (ARR_LOC[ARR_LOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
     VAL[SPEC_CELLS] <- rep(MULT[MULTLOC[MULTLOC > 3]], each = BLOCKSIZE)
-    VAL[ARR_CELL] <- CELL_INDX %>% parse_MF_CELL_INDX(LINE = linin)
+    VAL[ARR_CELL] <- CELL_INDX %>% MFtools::parse_MF_CELL_INDX(LINE = linin)
     }else{
-    VAL <- CELL_INDX %>% parse_MF_CELL_INDX(LINE = linin)
+    VAL <- CELL_INDX %>% MFtools::parse_MF_CELL_INDX(LINE = linin)
     }
     
     dZ     <- VAL[1:(NLAY * BLOCKSIZE)] %>% 
@@ -221,7 +221,7 @@ if(length(MULTLOC[MULTLOC > 3]) > 0){
                              PRSITY, 
                              ICBUND, 
                              SCONC = starts_with("V")) %>%
-                      repair_names(prefix = "SCONC", sep = "_")
+                      tibble::repair_names(prefix = "SCONC", sep = "_")
 rm(VAL)  
 # BACK ARRAYS
 #--------------------------------------------------------------

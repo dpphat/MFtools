@@ -49,18 +49,18 @@
 
 readdis <- function(rootname = NA){
     if(is.na(rootname)){
-            rootname <- getroot()
+            rootname <- MFtools::getroot()
     }
     infl <- paste0(rootname, ".dis")
-    linin <- read_lines(infl) %>% .[-grep("#", .)]              # READ IN DIS FILE BUT REMOVE COMMENTED LINES
+    linin <- readr::read_lines(infl) %>% .[!grepl("#", .)]              # READ IN DIS FILE BUT REMOVE COMMENTED LINES
                                                                 # THIS IS IN PREPARATION FOR MODFLOW 6
     indx <- 1
-    NLAY <- linin[indx] %>% parse_MF_FW_ELMT(1) %>% as.integer()
-    NROW <- linin[indx] %>% parse_MF_FW_ELMT(2) %>% as.integer()
-    NCOL <- linin[indx] %>% parse_MF_FW_ELMT(3) %>% as.integer()
-    NPER <- linin[indx] %>% parse_MF_FW_ELMT(4) %>% as.integer()
-    ITMUNI <- linin[indx] %>% parse_MF_FW_ELMT(5) %>% as.integer()
-    LENUNI <- linin[indx] %>% parse_MF_FW_ELMT(6) %>% as.integer()
+    NLAY <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(1) %>% as.integer()
+    NROW <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(2) %>% as.integer()
+    NCOL <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(3) %>% as.integer()
+    NPER <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(4) %>% as.integer()
+    ITMUNI <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(5) %>% as.integer()
+    LENUNI <- linin[indx] %>% MFtools::parse_MF_FW_ELMT(6) %>% as.integer()
 
     HDGLOC       <- grep("\\(", linin)
     HDG          <- linin[HDGLOC]
@@ -72,7 +72,7 @@ readdis <- function(rootname = NA){
     FRMT         <- substr(HDG, start = 21, stop = 30)
     FRMTREP      <- regmatches(FRMT, gregexpr("[[:digit:]]+", FRMT)) %>% lapply('[[', 1) %>% unlist() %>% as.integer()
     BLOCK_START  <- HDGLOC + 1
-    BLOCK_END    <- lead(BLOCK_START) - 2
+    BLOCK_END    <- dplyr::lead(BLOCK_START) - 2
     BLOCK_LENGTH <- (NROW * ceiling(NCOL / FRMTREP))
     BLOCK_END[length(BLOCK_END)] <- BLOCK_END[length(BLOCK_END) - 1] + BLOCK_LENGTH[length(BLOCK_END)] + 1
     BLOCK_START  <- BLOCK_START * ARR_MULT
@@ -82,7 +82,7 @@ readdis <- function(rootname = NA){
     indx <- indx + 1
     BLOCKSIZE <- NROW * NCOL
     BLOCKEND <- ceiling(NLAY / 50)
-    LAYCBD <- linin[indx + seq(1:BLOCKEND) - 1] %>% parse_MF_FW_LINE() %>% 
+    LAYCBD <- linin[indx + seq(1:BLOCKEND) - 1] %>% MFtools::parse_MF_FW_LINE() %>% 
               as.integer()
 
 # COLUMN WIDTHS
@@ -109,7 +109,7 @@ readdis <- function(rootname = NA){
     if(UNI[2] == 0){
     dY <- rep(MULT[2], NROW)
     }else{ 
-        dY <- linin[indx + seq(1:BLOCKEND) - 1] %>% parse_MF_FW_LINE()
+        dY <- linin[indx + seq(1:BLOCKEND) - 1] %>% MFtools::parse_MF_FW_LINE()
         }
     dY %<>% as.numeric()    
     Y <- sum(dY) - (c(dY[1] / 2., dY[1:(NROW - 1)] / 2. + dY[2:NROW] / 2.) %>% cumsum())
@@ -147,12 +147,11 @@ if(length(MULTLOC[MULTLOC > 3]) > 0){
     ARR_LOC    <- grep("^1$", ARR_MULT)
     ARR_CELL   <- rep(BLOCKSIZE * (ARR_LOC[ARR_LOC > 3] - 4), each = BLOCKSIZE) + 1:BLOCKSIZE
     VAL[SPEC_CELLS] <- rep(MULT[MULTLOC[MULTLOC > 3]], each = BLOCKSIZE)
-    VAL[ARR_CELL] <- CELL_INDX %>% parse_MF_CELL_INDX(LINE = linin)
+    VAL[ARR_CELL] <- CELL_INDX %>% MFtools::parse_MF_CELL_INDX(LINE = linin)
     }else{
-    VAL <- CELL_INDX %>% parse_MF_CELL_INDX(LINE = linin)
+    VAL <- CELL_INDX %>% MFtools::parse_MF_CELL_INDX(LINE = linin)
     }
-    
-    VAL %<>% as.numeric()    
+
     BOT <- tibble::data_frame(
                       LAY = rep(1:NLAY, each = NCOL * NROW) %>% as.integer(),
                       ROW = rep(rep(1:NROW, each = NCOL), NLAY) %>% as.integer(), 
@@ -170,10 +169,10 @@ if(length(MULTLOC[MULTLOC > 3]) > 0){
     NSTP <- vector(mode = "integer", length = NPER)
     TSMULT <- vector(mode = "numeric", length = NPER)
     SS <- vector(mode = "character", length = NPER)
-    PERLEN <- linin[indx:(indx + NPER - 1)] %>% parse_MF_FW_ELMT(1) %>% as.numeric()
-    NSTP   <- linin[indx:(indx + NPER - 1)] %>% parse_MF_FW_ELMT(2) %>% as.integer()    
-    TSMULT <- linin[indx:(indx + NPER - 1)] %>% parse_MF_FW_ELMT(3) %>% as.numeric()
-    SS     <- linin[indx:(indx + NPER - 1)] %>% parse_MF_FW_ELMT(4) %>% as.character()                 
+    PERLEN <- linin[indx:(indx + NPER - 1)] %>% MFtools::parse_MF_FW_ELMT(1) %>% as.numeric()
+    NSTP   <- linin[indx:(indx + NPER - 1)] %>% MFtools::parse_MF_FW_ELMT(2) %>% as.integer()    
+    TSMULT <- linin[indx:(indx + NPER - 1)] %>% MFtools::parse_MF_FW_ELMT(3) %>% as.numeric()
+    SS     <- linin[indx:(indx + NPER - 1)] %>% MFtools::parse_MF_FW_ELMT(4) %>% as.character()                 
     DIS <- list(NLAY = NLAY,
                 NCOL = NCOL, 
                 NROW = NROW, 

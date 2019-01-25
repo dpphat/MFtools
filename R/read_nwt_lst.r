@@ -7,9 +7,9 @@
 #' @export
 
 read_nwt_lst <- function(LISTFL){
-    linin <- read_lines(LISTFL) %>% .[-grep("#", .)]
+    linin <- readr::read_lines(LISTFL) %>% .[-grep("#", .)]
     HDCHNG_LOC_STRT <- grep("Residual-Control", linin) 
-    HDCHNG_LOC_END <- lead(HDCHNG_LOC_STRT) - 2
+    HDCHNG_LOC_END <- dplyr::lead(HDCHNG_LOC_STRT) - 2
     
     if(any(grepl("NWT REQUIRED", linin))){
         HDCHNG_LOC_END[length(HDCHNG_LOC_END)] <- grep("NWT REQUIRED", linin) - 3
@@ -20,7 +20,7 @@ read_nwt_lst <- function(LISTFL){
         
     HDCHNG_LOCS <- purrr::map2(HDCHNG_LOC_STRT + 1, HDCHNG_LOC_END, ~seq(.x, .y)) %>% unlist()
     COL_NAMES <- linin[HDCHNG_LOCS[1] - 1] %>%
-                    str_trim() %>% 
+                    stringr::str_trim() %>% 
                     strsplit("\\s+") %>% 
                     unlist()
                     
@@ -36,24 +36,24 @@ read_nwt_lst <- function(LISTFL){
     COL_NAMES[COL_NAMES == "Max.-Flux-Residual"]     <- "FLXCHNG"
     
     HDCHNG <- linin[HDCHNG_LOCS] %>% 
-                    str_trim() %>% 
-                    str_split_fixed("\\s+", n = Inf) %>% 
-                    as_tibble()
+                    stringr::str_trim() %>% 
+                    stringr::str_split_fixed("\\s+", n = Inf) %>% 
+                    tibble::as_tibble()
     colnames(HDCHNG) <- COL_NAMES
                     
-    out <- HDCHNG %>% mutate(`Residual-Control` = as.integer(`Residual-Control`), 
-                             ITER = as.integer(ITER), 
-                             INNER_ITER = as.integer(INNER_ITER), 
-                             COL = as.integer(COL), 
-                             ROW = as.integer(ROW), 
-                             LAY = as.integer(LAY), 
-                             MAX_FLUX_COL = as.integer(MAX_FLUX_COL), 
-                             MAX_FLUX_ROW = as.integer(MAX_FLUX_ROW), 
-                             MAX_FLUX_LAY = as.integer(MAX_FLUX_LAY), 
-                             HDCHNG = as.numeric(HDCHNG), 
-                             FLXCHNG = as.numeric(FLXCHNG), 
-                             `L2-New` = as.numeric(`L2-New`), 
-                             `L2-Old` = as.numeric(`L2-Old`), 
-                             `Solver-Max-Delh` = as.numeric(`Solver-Max-Delh`))
+    out <- HDCHNG %>% dplyr::mutate(`Residual-Control` = as.integer(`Residual-Control`), 
+                                    ITER = as.integer(ITER), 
+                                    INNER_ITER = as.integer(INNER_ITER), 
+                                    COL = as.integer(COL), 
+                                    ROW = as.integer(ROW), 
+                                    LAY = as.integer(LAY), 
+                                    MAX_FLUX_COL = as.integer(MAX_FLUX_COL), 
+                                    MAX_FLUX_ROW = as.integer(MAX_FLUX_ROW), 
+                                    MAX_FLUX_LAY = as.integer(MAX_FLUX_LAY), 
+                                    HDCHNG = as.numeric(HDCHNG), 
+                                    FLXCHNG = as.numeric(FLXCHNG), 
+                                    `L2-New` = as.numeric(`L2-New`), 
+                                    `L2-Old` = as.numeric(`L2-Old`), 
+                                    `Solver-Max-Delh` = as.numeric(`Solver-Max-Delh`))
     return(out)
 }

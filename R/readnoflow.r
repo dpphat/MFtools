@@ -13,7 +13,7 @@
 
 readnoflow <- function(FILE, rootname){
     infl <- FILE    
-    d <- readdis(rootname)
+    d <- MFtools::readdis(rootname)
     conn <- file(infl, open = "r")
     linin <- readLines(conn)
     close(conn)

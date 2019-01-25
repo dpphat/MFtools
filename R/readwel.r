@@ -67,10 +67,10 @@
 #' # ... with 13,955 more rows
 readwel <- function(rootname = NA, NSP = 1){
        if(is.na(rootname)){
-               rootname <- getroot()
+               rootname <- MFtools::getroot()
        }
        infl                   <- paste(rootname, ".wel", sep = "")
-       fl                     <- read_file(infl) %>% gsub("\r", "", x = .) %>% strsplit("\n") %>% unlist()
+       fl                     <- readr::read_file(infl) %>% gsub("\r", "", x = .) %>% strsplit("\n") %>% unlist()
        TEXT                   <- fl[grep("#", fl)]
        INDX                   <- ifelse(length(grep("#", fl)) == 0, 0, 
                                         max(grep("#", fl), na.rm = TRUE)) + 1
@@ -96,13 +96,23 @@ readwel <- function(rootname = NA, NSP = 1){
        BLOCKS                 <- setdiff(INDX + seq(1, NSP * (MXACTW + 1) - 1), STARTS)
        ITMP                   <- fl[STARTS] %>% substr(start = 1, stop = 10) %>% as.integer()
        NP                     <- fl[STARTS] %>% substr(start = 11, stop = 20) %>% as.integer()
+       SP                     <- seq(1, NSP) %>% rep(each = MXACTW)
        INSTANCES              <- fl[STARTS] %>% substr(start = 21, stop = nchar(fl[INDX + STARTS]))
+       # WELL                   <- fl[BLOCKS] %>% 
+       #                           stringr::str_split_fixed("\\s+", n = 6) %>% 
+       #                           tibble::as_tibble() %>% 
+       #                           dplyr::mutate(V1 = SP, 
+       #                                         V2 = as.integer(V2), 
+       #                                         V3 = as.integer(V3), 
+       #                                         V4 = as.integer(V4), 
+       #                                         V5 = as.numeric(V5)) %>% 
+       #                           rename(SP = V1, LAY = V2, ROW = V3, COL = V4, Q = V5, xyz = V6)
        Layer                  <- fl[BLOCKS] %>% substr(start = 1, stop = 10) %>% as.integer()
        Row                    <- fl[BLOCKS] %>% substr(start = 11, stop = 20) %>% as.integer()
        Col                    <- fl[BLOCKS] %>% substr(start = 21, stop = 30) %>% as.integer()
        Qfact                  <- fl[BLOCKS] %>% substr(start = 31, stop = 41) %>% as.numeric()
        xyz                    <- fl[BLOCKS] %>% substr(start = 42, nchar(fl[INDX + 1]))
-       SP                     <- seq(1, NSP) %>% rep(each = MXACTW)
+
        WELL      <- tibble::data_frame(SP = SP, 
                                        LAY = Layer, 
                                        ROW = Row, 

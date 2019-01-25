@@ -50,7 +50,7 @@
 #' HK—defines variable HK, horizontal hydraulic conductivity
 #' HANI—defines variable HANI, horizontal anisotropy
 #' VK—defines variable VKA for layers for which VKA represents vertical hydraulic conductivity (LAYVKA=0)
-#' VANI—defines variable VKA for layers for which VKA represents vertical anisotropy (LAYVKA≠0)
+#' VANI—defines variable VKA for layers for which VKA represents vertical anisotropy (LAYVKA!=0)
 #' SS—defines variable Ss, the specific storage
 #' SY—defines variable Sy, the specific yield
 #' VKCB—defines variable VKCB, the vertical hydraulic conductivity of a Quasi-3D confining layer.}
@@ -112,11 +112,11 @@
 
 readlpf <- function(rootname = NA){
     if(is.na(rootname)){
-            rootname <- getroot()
+            rootname <- MFtools::getroot()
     }
     infl <- paste0(rootname, ".lpf")
-    d <- readdis(rootname)           
-    linin <- read_lines(infl)
+    d    <- MFtools::readdis(rootname)           
+    linin <- readr::read_lines(infl)
     indx <- max(grep("#", linin)) + 1
     ILPFCB <- linin[indx] %>% 
               strsplit("\\s+") %>% 
